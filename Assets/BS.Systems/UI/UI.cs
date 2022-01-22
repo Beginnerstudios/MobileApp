@@ -27,6 +27,7 @@ namespace BS.Systems
         Button favourites;
         Button profile;
         Vector2 contentWindowSize;
+        GameObject menuParent;
 
         public void Awake()
         {
@@ -53,14 +54,23 @@ namespace BS.Systems
                 {
                     groupList.Add(AddContent(layout[i], "Content", 3));
                 }
+                else if(i ==1)
+                {
+                   groupList.Add(AddContent(layout[i], "Content", 1));                 
+                }
                 else
                 {
                     groupList.Add(AddContent(layout[i], "Content", 1));
                 }
             }
-            menu=groupList[0][0].GetComponent<Button>();
-            favourites = groupList[0][1].GetComponent<Button>();
-            profile = groupList[0][2].GetComponent<Button>();
+            menu=groupList[0][0].GetComponent<ButtonComponent>().button;
+            favourites = groupList[0][1].GetComponent<ButtonComponent>().button;
+            profile = groupList[0][2].GetComponent<ButtonComponent>().button;
+            menuParent = groupList[1][0];           
+            Destroy(menuParent.GetComponent<VerticalLayoutGroup>());
+            menuParent.AddComponent<HorizontalLayoutGroup>();
+            menuParent.GetComponent<HorizontalLayoutGroup>().childControlHeight=true;
+            menuParent.GetComponent<HorizontalLayoutGroup>().childControlWidth=true;
         }
         void AddListeners()
         {     
@@ -152,7 +162,8 @@ namespace BS.Systems
                 {
                     
                     GameObject menu = Instantiate(MenuPanelPrefab, canvas.transform);
-                    menu.GetComponent<RectTransform>().sizeDelta = contentWindowSize;
+                    
+                    menu.transform.SetParent(menuParent.transform);
                     return menu;
                 }
             }
