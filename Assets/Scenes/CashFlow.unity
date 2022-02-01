@@ -382,6 +382,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2051638235968029969, guid: 8b3093a3ea847f54a80e03cc256e5b13, type: 3}
+      propertyPath: m_Text
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 2051638236842299008, guid: 8b3093a3ea847f54a80e03cc256e5b13, type: 3}
       propertyPath: m_Enabled
       value: 1
@@ -454,6 +458,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2051638236940212215, guid: 8b3093a3ea847f54a80e03cc256e5b13, type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2051638237071525775, guid: 8b3093a3ea847f54a80e03cc256e5b13, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -520,6 +528,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2051638237290315448, guid: 8b3093a3ea847f54a80e03cc256e5b13, type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2051638237290315449, guid: 8b3093a3ea847f54a80e03cc256e5b13, type: 3}
+      propertyPath: m_Interactable
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2051638237577161100, guid: 8b3093a3ea847f54a80e03cc256e5b13, type: 3}
@@ -609,6 +621,10 @@ PrefabInstance:
     - target: {fileID: 2051638237577161103, guid: 8b3093a3ea847f54a80e03cc256e5b13, type: 3}
       propertyPath: m_Name
       value: GraphsPanel
+      objectReference: {fileID: 0}
+    - target: {fileID: 2051638237737418392, guid: 8b3093a3ea847f54a80e03cc256e5b13, type: 3}
+      propertyPath: m_Interactable
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2051638237737418395, guid: 8b3093a3ea847f54a80e03cc256e5b13, type: 3}
       propertyPath: m_AnchorMax.y

@@ -88,8 +88,8 @@ namespace BS.CashFlow
 
                 for(int y = 0; y < incomeCount; y++)
                 {
-                    int balance = Random.Range(0, 100000);
-                    int income = Random.Range(0, 50000);
+                    int balance = Random.Range(0, 1000000);
+                    int income = Random.Range(5000, 100000);
                     List<string> nameList = new List<string>() { "Vodafone", "Unicorn", "GameDev", "Donate" };
                     List<string> dateList = new List<string>() { "30.01.2022", "01.02.2022", "02.02.2022" };
                     int randomName = Random.Range(0, nameList.Count);
