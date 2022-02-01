@@ -38,9 +38,9 @@ namespace BS.CashFlow
 
         private void Awake()
         {
-            Setup();
+            Init();
         }
-        void Setup()
+        void Init()
         {
             int graphCount = 2;
             graphsRectList = new List<RectTransform>();
@@ -51,12 +51,12 @@ namespace BS.CashFlow
                 graphsRectList.Add(newGraph.GetComponent<RectTransform>());
             }
 
+
         }
 
         private void Start()
         {
-            Generate();
-
+       
             buttons.all.onClick.AddListener(delegate
             {
                 DestroyGraph();
@@ -73,36 +73,34 @@ namespace BS.CashFlow
                 DestroyGraph();
                 CreateGrapth(incomeList.Count - 6);
             });
-       
 
-
-
-
+          
         }
         public void Generate()
         {
             DestroyGraph();
-            Init();
+            CreateValues();
             CreateGrapth(0);
-        }
-        void Init()
-        {
-            incomeList = new List<Income>();
-            int incomeCount = 12;
-
-            for(int y = 0; y < incomeCount; y++)
+            void CreateValues()
             {
-                int balance = Random.Range(0, 100000);
-                int income = Random.Range(0, 50000);
-                List<string> nameList = new List<string>() { "Vodafone", "Unicorn", "GameDev", "Donate" };
-                List<string> dateList = new List<string>() { "30.01.2022", "01.02.2022", "02.02.2022" };
-                int randomName = Random.Range(0, nameList.Count);
-                int randomDate = Random.Range(0, dateList.Count);
+                incomeList = new List<Income>();
+                int incomeCount = 12;
 
-                Income inc = new Income(balance, income, nameList[randomName], dateList[randomDate]);
-                incomeList.Add(inc);
+                for(int y = 0; y < incomeCount; y++)
+                {
+                    int balance = Random.Range(0, 100000);
+                    int income = Random.Range(0, 50000);
+                    List<string> nameList = new List<string>() { "Vodafone", "Unicorn", "GameDev", "Donate" };
+                    List<string> dateList = new List<string>() { "30.01.2022", "01.02.2022", "02.02.2022" };
+                    int randomName = Random.Range(0, nameList.Count);
+                    int randomDate = Random.Range(0, dateList.Count);
+
+                    Income inc = new Income(balance, income, nameList[randomName], dateList[randomDate]);
+                    incomeList.Add(inc);
+                }
             }
         }
+       
         void CreateGrapth(int startIndex)
         {
             List<Income> valuList = new List<Income>();
@@ -116,20 +114,108 @@ namespace BS.CashFlow
                 startIndex++;
                 startIndex2++;
             }
-    
-
-
-
+            detailComponent.Refresh(valuList[valuList.Count-1]);
             ShowGraph(valuList, graphsRectList[0]);
             ShowGraph(valuList2, graphsRectList[1]);
-           
 
+            void ShowGraph(List<Income> incomeList, RectTransform graphRect)
+            {
+                float border = 25;
+                var graphType = graphRect.gameObject.GetComponent<GraphBehaviour>().graphType;
+                float graphHeight = graphRect.sizeDelta.y * .87f;
+                float graphWidth = graphRect.sizeDelta.x * .93f;
+                float yMaximum = 0;
+                float yMinimum = 0;
+
+                foreach(Income value in incomeList)
+                {
+                    var income = value.income;
+                    var balance = value.balance;
+
+                    if(graphType == GraphType.income)
+                    {
+                        if(income > yMaximum)
+                        {
+                            yMaximum = income;
+                        }
+                        if(income < yMinimum)
+                        {
+                            yMinimum = income;
+                        }
+                    }
+                    if(graphType == GraphType.balance)
+                    {
+                        if(balance > yMaximum)
+                        {
+                            yMaximum = balance;
+                        }
+                        if(balance < yMinimum)
+                        {
+                            yMinimum = balance;
+                        }
+                    }
+                }
+
+
+
+
+                yMaximum = yMaximum + ((yMaximum - yMinimum) * 0.2f);
+                yMinimum = yMinimum - ((yMaximum - yMinimum) * 0.2f);
+                float xSize = graphWidth / (incomeList.Count - 1);
+
+                //Values
+                GameObject lastCircleGameObject = null;
+                for(int i = 0; i < incomeList.Count; i++)
+                {
+                    float xPosition = i * xSize;
+                    int value = 0;
+
+                    if(graphType == GraphType.income)
+                    { value = incomeList[i].income; }
+                    if(graphType == GraphType.balance)
+                    { value = incomeList[i].balance; }
+
+
+                    float yPosition = ((value - yMinimum) / (yMaximum - yMinimum)) * graphHeight;
+
+
+                    GameObject circleGameObject = CreatePoint(new Vector2(xPosition + border, yPosition + border), incomeList[i], i, graphRect);
+                    if(lastCircleGameObject != null)
+                    {
+                        CreateDotConnection(lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition, circleGameObject.GetComponent<RectTransform>().anchoredPosition, graphRect);
+                    }
+                    lastCircleGameObject = circleGameObject;
+
+                }
+                //Columns
+                int columnCount = incomeList.Count;
+                for(int i = 0; i < columnCount; i++)
+                {
+                    float xPosition = i * xSize;
+                    CreateLabel(graphRect, new Vector2(xPosition + border, 0), i);
+                    CreateLine(graphRect, new Vector2(xPosition + border, border), RectTransform.Axis.Vertical, graphHeight);
+                }
+                //Rows
+                int rowsCount = 10;
+                for(int i = 0; i <= rowsCount; i++)
+                {
+                    float normalizedValue = i * 1f / rowsCount;
+                    Vector2 normalizedVector = new Vector2(0, normalizedValue * graphHeight + border);
+                    // float graphSegment = graphWidth / valueList.Count;
+
+                    if(i != 0)
+                    {
+                        CreateLabel(graphRect, normalizedVector, i - 1);
+                    }
+                    CreateLine(graphRect, normalizedVector + new Vector2(border, 0), RectTransform.Axis.Horizontal, graphWidth);
+                }
+            }
         }
         void DestroyGraph()
         {
         foreach(Transform t in graphsParent)
             {
-                if(t.childCount > 0)
+                if(t.childCount > 1)
                 {
                     foreach(Transform child in t.transform)
                     {
@@ -137,14 +223,13 @@ namespace BS.CashFlow
                         {
                             Destroy(child.gameObject);
 
-                        }
-                        
-
+                        }                       
                     }
                 }
             }
             
         }
+       
 
         GameObject CreatePoint(Vector2 anchoredPosition, Income income, int index, RectTransform graphRect)
         {
@@ -165,96 +250,6 @@ namespace BS.CashFlow
             incomeComponent.detal = detailComponent;
             incomeComponent.graphType = graphType;
             return incomeGO;
-        }
-        void ShowGraph(List<Income> incomeList, RectTransform graphRect)
-        {
-            float border = 25;
-            var graphType = graphRect.gameObject.GetComponent<GraphBehaviour>().graphType;
-            float graphHeight = graphRect.sizeDelta.y*.87f;
-            float graphWidth = graphRect.sizeDelta.x*.93f;
-            float yMaximum =0;
-            float yMinimum =0 ;
-
-            foreach(Income value in incomeList)
-                {
-                    var income = value.income;
-                    var balance = value.balance;
-
-                    if(graphType == GraphType.income)
-                    {
-                        if(income > yMaximum)
-                        {
-                            yMaximum = income;
-                        }
-                        if(income < yMinimum)
-                        {
-                            yMinimum = income;
-                        }
-                    }
-                    if(graphType == GraphType.balance)
-                    {
-                        if(balance > yMaximum)
-                        {
-                            yMaximum =balance;
-                        }
-                        if(balance < yMinimum)
-                        {
-                            yMinimum = balance;
-                        }
-                    }
-                }
-           
-        
-
-
-            yMaximum = yMaximum + ((yMaximum-yMinimum)*0.2f);
-            yMinimum  = yMinimum - ((yMaximum - yMinimum) * 0.2f);
-            float xSize = graphWidth/(incomeList.Count-1);
-
-            //Values
-            GameObject lastCircleGameObject = null;
-            for(int i = 0; i < incomeList.Count; i++)
-            {
-                float xPosition =  i*xSize;             
-                int value =0;
-             
-                if(graphType == GraphType.income){ value = incomeList[i].income;}                 
-                if(graphType == GraphType.balance){ value = incomeList[i].balance;}                 
-                
-
-               float yPosition = ((value - yMinimum) / (yMaximum - yMinimum)) * graphHeight;
-
-
-                GameObject circleGameObject = CreatePoint(new Vector2(xPosition+border, yPosition+border), incomeList[i], i, graphRect);
-                if(lastCircleGameObject != null)
-                {
-                    CreateDotConnection(lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition, circleGameObject.GetComponent<RectTransform>().anchoredPosition, graphRect);
-                }
-                lastCircleGameObject = circleGameObject;
-
-            }
-            //Columns
-            int columnCount = incomeList.Count;
-            for(int i = 0; i < columnCount; i++)
-            {
-                float xPosition = i * xSize;
-                CreateLabel(graphRect, new Vector2(xPosition + border, 0), i);
-                CreateLine(graphRect, new Vector2(xPosition + border, border), RectTransform.Axis.Vertical, graphHeight);
-            }
-            //Rows
-            int rowsCount =10;
-            for(int i = 0; i <= rowsCount; i++)
-            {
-                float normalizedValue = i*1f/ rowsCount;
-                Vector2 normalizedVector = new Vector2(0, normalizedValue * graphHeight+border);
-               // float graphSegment = graphWidth / valueList.Count;
-
-                if(i != 0)
-                {
-                CreateLabel(graphRect,normalizedVector,i-1);
-                }
-                CreateLine(graphRect, normalizedVector+new Vector2(border,0), RectTransform.Axis.Horizontal, graphWidth);
-            }
         }
         void CreateDotConnection(Vector2 dotPositionA, Vector2 dotPositionB, RectTransform graphRect)
         {

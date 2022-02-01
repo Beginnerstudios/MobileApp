@@ -25,6 +25,9 @@ namespace BS.CashFlow
             generate.onClick.AddListener(delegate
             {
                 sender.Generate();
+                sender.buttons.all.interactable = true;
+                sender.buttons.sixMonths.interactable = true;
+                sender.buttons.threeMonths.interactable = true;
             });
         }
         public void Refresh(Income incomeObj)
