@@ -175,3 +175,4 @@ MonoBehaviour:
   ContentContainerPrefab: {fileID: 4948885645710846947, guid: 7d86cc96e3b64c54e9f36caef65ee546, type: 3}
   canvas: {fileID: 3982070879169597566}
   MenuPanelPrefab: {fileID: 7390083434873842516, guid: baaf2e1daffb7c448b6485525dcc975b, type: 3}
+  graphPrefab: {fileID: 5254748518605842935, guid: 70aaa0bfa48d4b7449481edade989faa, type: 3}

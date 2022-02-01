@@ -16,6 +16,7 @@ namespace BS.Systems
         public GameObject canvas;
         public GameObject MenuPanelPrefab;
 
+        public GameObject graphPrefab;
 
         //grouList[0] = list of top menu buttons
         //groupList[1] = panel for content
@@ -56,7 +57,7 @@ namespace BS.Systems
                 }
                 else if(i ==1)
                 {
-                   groupList.Add(AddContent(layout[i], "Content", 1));                 
+                   Instantiate(graphPrefab, layout[i].transform);               
                 }
                 else
                 {
@@ -65,18 +66,12 @@ namespace BS.Systems
             }
             menu=groupList[0][0].GetComponent<ButtonComponent>().button;
             favourites = groupList[0][1].GetComponent<ButtonComponent>().button;
-            profile = groupList[0][2].GetComponent<ButtonComponent>().button;
-            menuParent = groupList[1][0];           
-            Destroy(menuParent.GetComponent<VerticalLayoutGroup>());
-            menuParent.AddComponent<HorizontalLayoutGroup>();
-            menuParent.GetComponent<HorizontalLayoutGroup>().childControlHeight=true;
-            menuParent.GetComponent<HorizontalLayoutGroup>().childControlWidth=true;
+            profile = groupList[0][2].GetComponent<ButtonComponent>().button;                                  
         }
         void AddListeners()
         {     
             menu.onClick.AddListener(delegate {
-                Debug.Log("menu");
-                CreateMenuPanel();
+                Debug.Log("menu");            
             });
             favourites.onClick.AddListener(delegate {
                 Debug.Log("favourites");
@@ -144,30 +139,7 @@ namespace BS.Systems
             return containerList;
         }
 
-        void CreateMenuPanel()
-        {
-            if(menuPanel)
-            {
-                Destroy(menuPanel);
-                Create();
-            }
-            else
-            {
-            Create();
-            }
-            void Create()
-            {
-                menuPanel = CreateMenu();
-                GameObject CreateMenu()
-                {
-                    
-                    GameObject menu = Instantiate(MenuPanelPrefab, canvas.transform);
-                    
-                    menu.transform.SetParent(menuParent.transform);
-                    return menu;
-                }
-            }
-        }
+      
 
     }
 }
