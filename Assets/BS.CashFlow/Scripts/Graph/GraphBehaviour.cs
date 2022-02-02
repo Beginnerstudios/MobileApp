@@ -8,15 +8,21 @@ namespace BS.CashFlow
 {
 	public class GraphBehaviour : ExtendedMonoBehaviour
 	{
+        public Prefabs prefabs = new Prefabs();
 
-	public TextMeshProUGUI graphTitle;
+        [System.Serializable]
+        public struct Prefabs
+        {                        
+            public GameObject label;
+            public GameObject line;
+            public GameObject point;
+            public GameObject detail;
+        }
+
+        public TextMeshProUGUI graphTitle;
         public GraphType graphType;
         public Color color;
-
-        public RectTransform points;
-        public RectTransform lines;
-        public RectTransform labels;
-       
+     
         private void Start()
         {
          

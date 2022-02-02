@@ -14,7 +14,7 @@ namespace BS.CashFlow
         new public TextMeshProUGUI name;
         public TextMeshProUGUI date;
         public Button generate;
-        [SerializeField] GraphsManager sender;
+        public GraphsManager sender;
         private void Start()
         {
             AddListeners();
@@ -25,14 +25,22 @@ namespace BS.CashFlow
             generate.onClick.AddListener(delegate
             {
                 sender.Generate();
+                if(sender.incomeList.Count >= 3)
+                {
+                    sender.buttons.threeMonths.interactable = true;
+                }
+                if(sender.incomeList.Count >= 6)
+                {
+                    sender.buttons.sixMonths.interactable = true;
+                }
                 sender.buttons.all.interactable = true;
-                sender.buttons.sixMonths.interactable = true;
-                sender.buttons.threeMonths.interactable = true;
+          
+           
             });
         }
-        public void Refresh(Income incomeObj)
-        {
-            balance.text = incomeObj.balance.ToString();
+        public void Refresh(GraphValue incomeObj)
+        {           
+            balance.text = incomeObj.balance.ToString();          
             balance.color = Color.green;
             income.text = incomeObj.income.ToString();
             income.color = Color.yellow;

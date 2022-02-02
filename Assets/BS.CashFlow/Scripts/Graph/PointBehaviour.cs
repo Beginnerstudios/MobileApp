@@ -10,11 +10,11 @@ namespace BS.CashFlow
     public class PointBehaviour : ExtendedMonoBehaviour
     {
 
-        public Income incomeObj;
-        public List<Income> incomeList;
+        public GraphValue incomeObj;
+        public List<GraphValue> incomeList;
         public TextMeshProUGUI widgetText;
         public Button point;
-        public DetailBehaviour detal;
+        public DetailBehaviour detail;
         public int index;
         public GraphType graphType;
         private void Start()
@@ -24,8 +24,8 @@ namespace BS.CashFlow
         void Init()
         {
             point.onClick.AddListener(delegate
-            {
-             detal.Refresh(incomeObj);
+            {             
+             detail.Refresh(incomeObj);
             });
         
 
@@ -35,15 +35,19 @@ namespace BS.CashFlow
 
             void SetText()
             {
-                if(graphType == GraphType.balance)
+                if (incomeObj != null)
                 {
-                    widgetText.text = incomeObj.balance.ToString();
+                    if(graphType == GraphType.balance)
+                    {
+                        widgetText.text = incomeObj.balance.ToString();
 
+                    }
+                    else if(graphType == GraphType.income)
+                    {
+                        widgetText.text = incomeObj.income.ToString();
+                    }
                 }
-                else if(graphType == GraphType.income)
-                {
-                    widgetText.text = incomeObj.income.ToString();
-                }
+            
 
             }
             void SetColor()
