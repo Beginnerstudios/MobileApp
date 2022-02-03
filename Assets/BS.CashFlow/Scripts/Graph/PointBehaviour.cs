@@ -46,6 +46,7 @@ namespace BS.CashFlow
                     {
                         widgetText.text = incomeObj.income.ToString();
                     }
+                 
                 }
             
 
@@ -59,6 +60,10 @@ namespace BS.CashFlow
                 else if(graphType == GraphType.income)
                 {
                     widgetText.color = Color.yellow;
+                }
+                else if(graphType == GraphType.outcome)
+                {
+                    widgetText.color = Color.cyan;
                 }
             }
 

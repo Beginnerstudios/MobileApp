@@ -15,7 +15,8 @@ namespace BS.CashFlow
         public int income;
         public string name;
         public string date;
-        public int outcome;
+        public int incomeDifference;
+        public int balanceDifference;
         public GraphValue(int balance, int income)
         {
             this.balance = balance;
@@ -30,10 +31,7 @@ namespace BS.CashFlow
             this.name = name;
             this.date = date;
         }
-        public GraphValue(int outcome)
-        {
-            this.outcome = outcome;
-        }
+      
     }
     public static class Utils
     {
@@ -63,55 +61,116 @@ namespace BS.CashFlow
             biggestBalance = biggestBalance *= 1.2f;
             return biggestBalance;
         }
+        public static Color DeterminateColorFromValue(int value)
+        {
+            if(value > 0)
+            {
+                return Color.green;
+            }
+            else if(value.Equals(0))
+            {
+                return Color.yellow;
+            }
+            else if(value < 0)
+            {
+                return Color.red;
+            }
+            else
+            {
+                return Color.white;
+            }
+        }
 
     }
     public class GraphValues
     {
         protected List<GraphValue> valuesList;
-       
+
         public GraphValues(List<GraphValue> valuesList)
         {
             this.valuesList = valuesList;
         }
-        public Tuple<int, int> GetDifferences(int index, GraphType graphType)
+        public GraphValues()
         {
-            int leftDifference = 0;
-            int rightDifference = 0;
 
-            if(index + 1 < valuesList.Count )
+        }
+        public List<GraphValue> GenerateDummyData(int valueCount)
+        {
+            List<GraphValue> valueList = new List<GraphValue>();
+
+            for(int y = 0; y < valueCount; y++)
             {
+                int balance = UnityEngine.Random.Range(0, 1000000);
+                int income = UnityEngine.Random.Range(5000, 100000);
+                List<string> nameList = new List<string>() { "Vodafone", "Unicorn", "GameDev", "Donate" };
+                List<string> dateList = new List<string>() { "30.01.2022", "01.02.2022", "02.02.2022" };
+                int randomName = UnityEngine.Random.Range(0, nameList.Count);
+                int randomDate = UnityEngine.Random.Range(0, dateList.Count);
 
-                if(graphType == GraphType.balance)
-                {
-                   
-                    rightDifference = valuesList[index + 1].balance;
-                }
-                if(graphType == GraphType.income)
-                {
-                   
-                    rightDifference = valuesList[index + 1].income;
-                }
+                GraphValue gV = new GraphValue(balance, income, nameList[randomName], dateList[randomDate]);
 
+                valueList.Add(gV);
             }
-             if(index - 1 >= 0)
+            return valueList;
+        }
+        public Tuple<GraphValue, GraphValue> GetSiblings(int index)
+        {
+            GraphValue leftSibling = null;
+            GraphValue rightSibling = null;
+
+            if(index + 1 < valuesList.Count)
             {
-
-                if(graphType == GraphType.balance)
-                {
-                    leftDifference = valuesList[index - 1].balance;
-
-                }
-                if(graphType == GraphType.income)
-                {
-                    leftDifference = valuesList[index - 1].income;
-
-                }
-            
+                rightSibling = valuesList[index + 1];
             }
-         
+            if(index - 1 >= 0)
+            {
+                leftSibling = valuesList[index - 1];
+            }
+            return Tuple.Create(leftSibling, rightSibling);
+        }
+        public List<GraphValue> CountDifferences(List<GraphValue> valueList, GraphType graphType)
+        {
+
+            int difference = 0;
+            for(int i = 0; i < valueList.Count - 1; i++)
+            {
+                if(i + 1 < valueList.Count)
+                {                   
+                    if(graphType == GraphType.balance)
+                    {
+                        difference = valueList[i].balance - valueList[i + 1].balance;
+                        if(difference < 0)
+                        {
+                            difference *= -1;
+                        }
+                        if(valueList[i].balance > valueList[i + 1].balance)
+                        {
+                            difference *= -1;
+                        }
+                        valueList[i + 1].balanceDifference = difference;
+                    }
+                    if(graphType == GraphType.income)
+                    {
+                        difference = valueList[i].income - valueList[i + 1].income;
+                        if(difference < 0)
+                        {
+                            difference *= -1;
+                        }
+                        if(valueList[i].income > valueList[i + 1].income)
+                        {
+                            difference *= -1;
+                        }
+                        valueList[i + 1].incomeDifference = difference;
+                    }
 
 
-            return Tuple.Create(leftDifference, rightDifference);
+                }
+              
+            }
+
+
+
+            return valueList;
         }
     }
     public enum GraphType

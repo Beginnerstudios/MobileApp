@@ -21,7 +21,7 @@ namespace BS.CashFlow
         }
         void AddListeners()
         {
-  
+
             generate.onClick.AddListener(delegate
             {
                 sender.Generate();
@@ -34,18 +34,43 @@ namespace BS.CashFlow
                     sender.buttons.sixMonths.interactable = true;
                 }
                 sender.buttons.all.interactable = true;
-          
-           
+
+
             });
         }
         public void Refresh(GraphValue incomeObj)
-        {           
-            balance.text = incomeObj.balance.ToString();          
+        {
+            balance.text = incomeObj.balance.ToString();
             balance.color = Color.green;
             income.text = incomeObj.income.ToString();
             income.color = Color.yellow;
             name.text = incomeObj.name;
             date.text = incomeObj.date;
+        }
+        public void RefreshConnection(GraphValue incomeObj, GraphType graphType)
+        {
+            int value =0;
+            if(graphType == GraphType.balance)
+            {
+                 value = incomeObj.balanceDifference;
+            
+            }
+            if(graphType == GraphType.income)
+            {
+                 value = incomeObj.incomeDifference;            
+            }
+            if(value > 0)
+            {
+                balance.text = "+"+value.ToString();
+            }
+            else
+            {
+            balance.text = value.ToString();
+            }
+            balance.color = Utils.DeterminateColorFromValue(value);
+            income.text = "";         
+            name.text = "";
+            date.text = "";
         }
 
 

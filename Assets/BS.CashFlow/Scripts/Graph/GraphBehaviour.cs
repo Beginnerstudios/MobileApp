@@ -17,6 +17,7 @@ namespace BS.CashFlow
             public GameObject line;
             public GameObject point;
             public GameObject detail;
+            public GameObject connection;
         }
 
         public TextMeshProUGUI graphTitle;

@@ -28,6 +28,7 @@ namespace BS.CashFlow
 
         List<RectTransform> graphsRectList;
         public List<GraphValue> incomeList { get; private set; }
+   
         public List<int> exapnsesList { get; private set; }
         GameObject detail;
         #endregion
@@ -80,38 +81,18 @@ namespace BS.CashFlow
             CreateGrapth(0);
             void CreateValues()
             {
-                incomeList = new List<GraphValue>();
-                int incomeCount = 3;
-
-                for(int y = 0; y < incomeCount; y++)
-                {
-                    int balance = Random.Range(0, 1000000);
-                    int income = Random.Range(5000, 100000);
-                    List<string> nameList = new List<string>() { "Vodafone", "Unicorn", "GameDev", "Donate" };
-                    List<string> dateList = new List<string>() { "30.01.2022", "01.02.2022", "02.02.2022" };
-                    int randomName = Random.Range(0, nameList.Count);
-                    int randomDate = Random.Range(0, dateList.Count);
-
-                    GraphValue inc = new GraphValue(balance, income, nameList[randomName], dateList[randomDate]);
-                    incomeList.Add(inc);
-
-             
-                
-                       
-                }
-                GraphValues gV = new GraphValues(incomeList);
-                for(int i = 0; i < incomeList.Count; i++)
-                {
-                    Debug.Log(gV.GetDifferences(i, GraphType.balance));
-                }
+                           
+                GraphValues gV = new GraphValues();
+                incomeList = gV.GenerateDummyData(10);              
             }
         }
 
         void CreateGrapth(int startIndex)
         {
             List<GraphValue> valuList = new List<GraphValue>();
-            List<GraphValue> valuList2 = new List<GraphValue>();
+            List<GraphValue> valuList2 = new List<GraphValue>();         
             int startIndex2 = startIndex;
+            
 
             while(startIndex < incomeList.Count)
             {
@@ -120,8 +101,10 @@ namespace BS.CashFlow
                 startIndex++;
                 startIndex2++;
             }
-            ShowGraph(valuList, graphsRectList[0]);
-            ShowGraph(valuList2, graphsRectList[1]);
+         
+            
+            ShowGraph(new GraphValues().CountDifferences(valuList, GraphType.balance), graphsRectList[0]);
+            ShowGraph(new GraphValues().CountDifferences(valuList2, GraphType.income), graphsRectList[1]);          
 
             void ShowGraph(List<GraphValue> incomeList, RectTransform graphRect)
             {
@@ -136,6 +119,7 @@ namespace BS.CashFlow
                 {
                     var income = value.income;
                     var balance = value.balance;
+                   
 
                     if(graphType == GraphType.income)
                     {
@@ -160,6 +144,7 @@ namespace BS.CashFlow
                         }
 
                     }
+                 
                 }
 
 
@@ -180,6 +165,7 @@ namespace BS.CashFlow
                     { value = incomeList[i].income; }
                     if(graphType == GraphType.balance)
                     { value = incomeList[i].balance; }
+                  
 
 
                     float yPosition = ((value - yMinimum) / (yMaximum - yMinimum)) * graphHeight;
@@ -188,7 +174,7 @@ namespace BS.CashFlow
                     GameObject circleGameObject = CreatePoint(new Vector2(xPosition + border, yPosition + border), incomeList[i], i, graphRect);
                     if(lastCircleGameObject != null)
                     {
-                        CreateDotConnection(lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition, circleGameObject.GetComponent<RectTransform>().anchoredPosition, graphRect);
+                        CreateDotConnection(lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition, circleGameObject.GetComponent<RectTransform>().anchoredPosition, graphRect,incomeList[i],graphType);
                     }
                     lastCircleGameObject = circleGameObject;
 
@@ -258,14 +244,15 @@ namespace BS.CashFlow
             incomeComponent.graphType = graphType;
             return incomeGO;
         }
-        void CreateDotConnection(Vector2 dotPositionA, Vector2 dotPositionB, RectTransform graphRect)
+        void CreateDotConnection(Vector2 dotPositionA, Vector2 dotPositionB, RectTransform graphRect,GraphValue income,GraphType graphType)
         {
+            var graphComponent= graphRect.GetComponent<GraphBehaviour>();
 
-            var graphColor = graphRect.gameObject.GetComponent<GraphBehaviour>().color;
-            GameObject gameObject = new GameObject("dotConnection", typeof(Image));
+            GameObject gameObject = Instantiate(graphComponent.prefabs.connection);
+            gameObject.SetActive(true);
             gameObject.transform.SetParent(graphRect, false);
             gameObject.transform.SetSiblingIndex(2);
-            gameObject.GetComponent<Image>().color = graphColor;
+            gameObject.GetComponent<Image>().color = graphComponent.color;
             RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
             Vector2 dir = (dotPositionB - dotPositionA).normalized;
             float distance = Vector2.Distance(dotPositionA, dotPositionB);
@@ -274,6 +261,12 @@ namespace BS.CashFlow
             rectTransform.anchorMax = new Vector2(0, 0);
             rectTransform.anchoredPosition = dotPositionA + dir * distance * .5f;
             rectTransform.localEulerAngles = new Vector3(0, 0, UtilsClass.GetAngleFromVectorFloat(dir));
+
+            var incomeComponent = gameObject.GetComponent<ConnectionBehaviour>();         
+            incomeComponent.incomeObj = income;    
+            incomeComponent.graphType = graphType;
+            incomeComponent.detail = detail.GetComponent<DetailBehaviour>();
+           
         }
         void CreateLabel(RectTransform graphRect, Vector2 position, int i)
         {
