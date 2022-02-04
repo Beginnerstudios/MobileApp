@@ -12,7 +12,7 @@ namespace BS.CashFlow
 
         public GraphValue incomeObj;      
         public Button connection;
-        public DetailBehaviour detail;
+        public TooltipBehaviour tooltip;
         public GraphType graphType;
        
         private void Start()
@@ -23,7 +23,7 @@ namespace BS.CashFlow
         {
             connection.onClick.AddListener(delegate
             {             
-             detail.RefreshConnection(incomeObj,graphType);
+             tooltip.PopulateConnection(incomeObj,graphType);
             });
 
         }

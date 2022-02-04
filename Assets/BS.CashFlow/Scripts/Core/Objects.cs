@@ -11,27 +11,32 @@ namespace BS.CashFlow
     }
     public class GraphValue
     {
-        public int balance;
-        public int income;
-        public string name;
-        public string date;
-        public int incomeDifference;
-        public int balanceDifference;
-        public GraphValue(int balance, int income)
-        {
-            this.balance = balance;
-            this.income = income;
-            this.name = "Default";
-            this.date = "Default";
-        }
+        public Dictionary<string, int> balanceDict = new Dictionary<string, int>();
+        public Dictionary<string, int> incomeDict = new Dictionary<string, int>();
+        public Dictionary<string, int> balanceDifferenceDict = new Dictionary<string, int>();
+        public Dictionary<string, int> incomeDifferenceDict = new Dictionary<string, int>();
+        public Dictionary<string, string> nameDict = new Dictionary<string, string>();
+        public Dictionary<string, string> dateDict = new Dictionary<string, string>();
+   
+     
+ 
         public GraphValue(int balance, int income, string name, string date)
         {
-            this.balance = balance;
-            this.income = income;
-            this.name = name;
-            this.date = date;
-        }
+            CreateDictionaries(balance, income, name, date);
       
+        }
+        void CreateDictionaries(int balance, int income, string name, string date)
+        {
+            balanceDict = new Dictionary<string, int>();
+            balanceDict.Add("Balance", balance);
+            incomeDict = new Dictionary<string, int>();
+            incomeDict.Add("Income", income);
+            nameDict = new Dictionary<string, string>();
+            nameDict.Add("Name", name);
+            dateDict = new Dictionary<string, string>();
+            dateDict.Add("Date", date);
+        }
+
     }
     public static class Utils
     {
@@ -51,11 +56,15 @@ namespace BS.CashFlow
             float biggestBalance = 0;
             foreach(GraphValue income in incomeList)
             {
-                biggestBalance = income.balance;
-                if(income.balance > biggestBalance)
+                foreach(KeyValuePair<string, int> ele in income.balanceDict)
                 {
-                    biggestBalance = income.balance;
+                    biggestBalance = ele.Value;
+                    if(ele.Value > biggestBalance)
+                    {
+                        biggestBalance = ele.Value;
+                    }
                 }
+
             }
             //buffer
             biggestBalance = biggestBalance *= 1.2f;
@@ -80,7 +89,50 @@ namespace BS.CashFlow
                 return Color.white;
             }
         }
+        public static int GetIntValueFromDictionary(Dictionary<string,int> dictionary)
+        {
+            int value = 0;
+            foreach(KeyValuePair<string, int> ele in dictionary)
+            {
+              
+                value= ele.Value;
 
+            }
+            return value;
+        }
+        public static string GetStringKeyFromDictionary(Dictionary<string, int> dictionary)
+        {
+            string value = "";
+            foreach(KeyValuePair<string, int> ele in dictionary)
+            {
+
+                value = ele.Key;
+
+            }
+            return value;
+        }
+        public static string GetStringKeyFromDictionary(Dictionary<string, string> dictionary)
+        {
+            string value = "";
+            foreach(KeyValuePair<string, string> ele in dictionary)
+            {
+
+                value = ele.Key;
+
+            }
+            return value;
+        }
+        public static string GetStringValueFromDictionary(Dictionary<string, string> dictionary)
+        {
+            string value = "";
+            foreach(KeyValuePair<string, string> ele in dictionary)
+            {
+
+                value = ele.Value;
+
+            }
+            return value;
+        }
     }
     public class GraphValues
     {
@@ -107,8 +159,7 @@ namespace BS.CashFlow
                 int randomName = UnityEngine.Random.Range(0, nameList.Count);
                 int randomDate = UnityEngine.Random.Range(0, dateList.Count);
 
-                GraphValue gV = new GraphValue(balance, income, nameList[randomName], dateList[randomDate]);
-
+                GraphValue gV = new GraphValue(balance, income, nameList[randomName], dateList[randomDate]);               
                 valueList.Add(gV);
             }
             return valueList;
@@ -135,40 +186,48 @@ namespace BS.CashFlow
             for(int i = 0; i < valueList.Count - 1; i++)
             {
                 if(i + 1 < valueList.Count)
-                {                   
+                {
                     if(graphType == GraphType.balance)
                     {
-                        difference = valueList[i].balance - valueList[i + 1].balance;
-                        if(difference < 0)
-                        {
-                            difference *= -1;
-                        }
-                        if(valueList[i].balance > valueList[i + 1].balance)
-                        {
-                            difference *= -1;
-                        }
-                        valueList[i + 1].balanceDifference = difference;
+                        int value = Utils.GetIntValueFromDictionary(valueList[i].balanceDict);
+                        int value1 = Utils.GetIntValueFromDictionary(valueList[i+1].balanceDict);
+
+                                difference = value - value1;
+
+                                if(difference < 0)
+                                {
+                                    difference *= -1;
+                                }
+                                if(value > value1)
+                                {
+                                    difference *= -1;
+                                }
+                                valueList[i + 1].balanceDifferenceDict.Add("Balance Difference", difference);
+    
                     }
                     if(graphType == GraphType.income)
                     {
-                        difference = valueList[i].income - valueList[i + 1].income;
+                        int value = Utils.GetIntValueFromDictionary(valueList[i].incomeDict);
+                        int value1 = Utils.GetIntValueFromDictionary(valueList[i+1].incomeDict);
+
+                        difference = value - value1;
+
                         if(difference < 0)
                         {
                             difference *= -1;
                         }
-                        if(valueList[i].income > valueList[i + 1].income)
+                        if(value > value1)
                         {
                             difference *= -1;
                         }
-                        valueList[i + 1].incomeDifference = difference;
+                        valueList[i + 1].incomeDifferenceDict.Add("Income Difference", difference);
+
                     }
 
 
                 }
-              
+
             }
-
-
 
             return valueList;
         }

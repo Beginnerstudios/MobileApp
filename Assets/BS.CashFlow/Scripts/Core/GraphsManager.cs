@@ -19,6 +19,7 @@ namespace BS.CashFlow
             public Button sixMonths;
             public Button threeMonths;
             public Button all;
+            public Button Generate;
         }
         [System.Serializable]
         public struct Prefabs
@@ -28,9 +29,9 @@ namespace BS.CashFlow
 
         List<RectTransform> graphsRectList;
         public List<GraphValue> incomeList { get; private set; }
-   
+
         public List<int> exapnsesList { get; private set; }
-        GameObject detail;
+        GameObject tooltip;
         #endregion
 
         private void Awake()
@@ -47,7 +48,7 @@ namespace BS.CashFlow
                 newGraph.GetComponent<GraphBehaviour>().graphType = (GraphType)i;
                 graphsRectList.Add(newGraph.GetComponent<RectTransform>());
             }
-   
+
             CreateDetail();
 
         }
@@ -70,6 +71,10 @@ namespace BS.CashFlow
                 DestroyGraph();
                 CreateGrapth(incomeList.Count - 6);
             });
+            buttons.Generate.onClick.AddListener(delegate
+            {
+                Generate();
+            });
 
 
         }
@@ -81,18 +86,18 @@ namespace BS.CashFlow
             CreateGrapth(0);
             void CreateValues()
             {
-                           
+
                 GraphValues gV = new GraphValues();
-                incomeList = gV.GenerateDummyData(10);              
+                incomeList = gV.GenerateDummyData(10);
             }
         }
 
         void CreateGrapth(int startIndex)
         {
             List<GraphValue> valuList = new List<GraphValue>();
-            List<GraphValue> valuList2 = new List<GraphValue>();         
+            List<GraphValue> valuList2 = new List<GraphValue>();
             int startIndex2 = startIndex;
-            
+
 
             while(startIndex < incomeList.Count)
             {
@@ -101,10 +106,10 @@ namespace BS.CashFlow
                 startIndex++;
                 startIndex2++;
             }
-         
-            
+
+
             ShowGraph(new GraphValues().CountDifferences(valuList, GraphType.balance), graphsRectList[0]);
-            ShowGraph(new GraphValues().CountDifferences(valuList2, GraphType.income), graphsRectList[1]);          
+            ShowGraph(new GraphValues().CountDifferences(valuList2, GraphType.income), graphsRectList[1]);
 
             void ShowGraph(List<GraphValue> incomeList, RectTransform graphRect)
             {
@@ -117,37 +122,27 @@ namespace BS.CashFlow
 
                 foreach(GraphValue value in incomeList)
                 {
-                    var income = value.income;
-                    var balance = value.balance;
-                   
-
+                    int yValue = 0;
                     if(graphType == GraphType.income)
                     {
-                        if(income > yMaximum)
-                        {
-                            yMaximum = income;
-                        }
-                        if(income < yMinimum)
-                        {
-                            yMinimum = income;
-                        }
+                        yValue = Utils.GetIntValueFromDictionary(value.incomeDict);
                     }
                     if(graphType == GraphType.balance)
                     {
-                        if(balance > yMaximum)
-                        {
-                            yMaximum = balance;
-                        }
-                        if(balance < yMinimum)
-                        {
-                            yMinimum = balance;
-                        }
-
+                        yValue = Utils.GetIntValueFromDictionary(value.balanceDict);
                     }
-                 
+
+
+                    if(yValue > yMaximum)
+                    {
+                        yMaximum = yValue;
+                    }
+                    if(yValue < yMinimum)
+                    {
+                        yMinimum = yValue;
+                    }
+
                 }
-
-
 
 
                 yMaximum = yMaximum + ((yMaximum - yMinimum) * 0.2f);
@@ -162,10 +157,16 @@ namespace BS.CashFlow
                     int value = 0;
 
                     if(graphType == GraphType.income)
-                    { value = incomeList[i].income; }
+                    {
+                        value = Utils.GetIntValueFromDictionary(incomeList[i].incomeDict);
+                      
+                    }
                     if(graphType == GraphType.balance)
-                    { value = incomeList[i].balance; }
-                  
+                    {
+                        value = Utils.GetIntValueFromDictionary(incomeList[i].balanceDict);
+                       
+                    }
+
 
 
                     float yPosition = ((value - yMinimum) / (yMaximum - yMinimum)) * graphHeight;
@@ -174,7 +175,7 @@ namespace BS.CashFlow
                     GameObject circleGameObject = CreatePoint(new Vector2(xPosition + border, yPosition + border), incomeList[i], i, graphRect);
                     if(lastCircleGameObject != null)
                     {
-                        CreateDotConnection(lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition, circleGameObject.GetComponent<RectTransform>().anchoredPosition, graphRect,incomeList[i],graphType);
+                        CreateDotConnection(lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition, circleGameObject.GetComponent<RectTransform>().anchoredPosition, graphRect, incomeList[i], graphType);
                     }
                     lastCircleGameObject = circleGameObject;
 
@@ -207,7 +208,7 @@ namespace BS.CashFlow
         {
             foreach(Transform t in graphsParent)
             {
-                if(t.childCount > 1 && t.name != "Detail(Clone)")
+                if(t.childCount > 1 && t.name != "Tooltip(Clone)")
                 {
                     foreach(Transform child in t.transform)
                     {
@@ -240,13 +241,13 @@ namespace BS.CashFlow
             incomeComponent.incomeObj = income;
             incomeComponent.index = index;
             incomeComponent.incomeList = incomeList;
-            incomeComponent.detail = detail.GetComponent<DetailBehaviour>();
+            incomeComponent.tooltip = tooltip.GetComponent<TooltipBehaviour>();
             incomeComponent.graphType = graphType;
             return incomeGO;
         }
-        void CreateDotConnection(Vector2 dotPositionA, Vector2 dotPositionB, RectTransform graphRect,GraphValue income,GraphType graphType)
+        void CreateDotConnection(Vector2 dotPositionA, Vector2 dotPositionB, RectTransform graphRect, GraphValue income, GraphType graphType)
         {
-            var graphComponent= graphRect.GetComponent<GraphBehaviour>();
+            var graphComponent = graphRect.GetComponent<GraphBehaviour>();
 
             GameObject gameObject = Instantiate(graphComponent.prefabs.connection);
             gameObject.SetActive(true);
@@ -262,11 +263,11 @@ namespace BS.CashFlow
             rectTransform.anchoredPosition = dotPositionA + dir * distance * .5f;
             rectTransform.localEulerAngles = new Vector3(0, 0, UtilsClass.GetAngleFromVectorFloat(dir));
 
-            var incomeComponent = gameObject.GetComponent<ConnectionBehaviour>();         
-            incomeComponent.incomeObj = income;    
+            var incomeComponent = gameObject.GetComponent<ConnectionBehaviour>();
+            incomeComponent.incomeObj = income;
             incomeComponent.graphType = graphType;
-            incomeComponent.detail = detail.GetComponent<DetailBehaviour>();
-           
+            incomeComponent.tooltip = tooltip.GetComponent<TooltipBehaviour>();
+
         }
         void CreateLabel(RectTransform graphRect, Vector2 position, int i)
         {
@@ -296,10 +297,10 @@ namespace BS.CashFlow
         }
         void CreateDetail()
         {
-            detail = Instantiate(graphsRectList[0].gameObject.GetComponent<GraphBehaviour>().prefabs.detail);
-            detail.transform.SetParent(graphsParent);
-            detail.GetComponent<DetailBehaviour>().sender = this;
-            detail.SetActive(true);
+            tooltip = Instantiate(graphsRectList[0].gameObject.GetComponent<GraphBehaviour>().prefabs.tooltip);
+            tooltip.transform.SetParent(graphsParent);
+      
+            tooltip.SetActive(true);
         }
     }
 }

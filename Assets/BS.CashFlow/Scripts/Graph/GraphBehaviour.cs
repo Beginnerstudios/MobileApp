@@ -16,7 +16,7 @@ namespace BS.CashFlow
             public GameObject label;
             public GameObject line;
             public GameObject point;
-            public GameObject detail;
+            public GameObject tooltip;
             public GameObject connection;
         }
 

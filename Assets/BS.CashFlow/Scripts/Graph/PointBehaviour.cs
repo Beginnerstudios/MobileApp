@@ -14,7 +14,7 @@ namespace BS.CashFlow
         public List<GraphValue> incomeList;
         public TextMeshProUGUI widgetText;
         public Button point;
-        public DetailBehaviour detail;
+        public TooltipBehaviour tooltip;
         public int index;
         public GraphType graphType;
         private void Start()
@@ -25,7 +25,7 @@ namespace BS.CashFlow
         {
             point.onClick.AddListener(delegate
             {             
-             detail.Refresh(incomeObj);
+             tooltip.Populate(incomeObj);
             });
         
 
@@ -39,12 +39,21 @@ namespace BS.CashFlow
                 {
                     if(graphType == GraphType.balance)
                     {
-                        widgetText.text = incomeObj.balance.ToString();
+                        foreach(KeyValuePair<string, int> ele in incomeObj.balanceDict)
+                        {
+                            widgetText.text = ele.Value.ToString();
+                           
+                        }
+                      
 
                     }
                     else if(graphType == GraphType.income)
                     {
-                        widgetText.text = incomeObj.income.ToString();
+                        foreach(KeyValuePair<string, int> ele in incomeObj.incomeDict)
+                        {
+                            widgetText.text = ele.Value.ToString();
+
+                        }
                     }
                  
                 }
