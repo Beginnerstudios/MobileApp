@@ -1,35 +1,21 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
-namespace BS.Systems
 
+namespace BS.Systems.UI
 {
     public class UI : ExtendedMonoBehaviour, ISystemComponent
     {
-
-        //Prefabs
-        public GameObject CanvasHolderPrefab;
-        public GameObject LayoutHolderPrefab;
-        public GameObject ContentContainerPrefab;
-        public GameObject canvas;
-        public GameObject MenuPanelPrefab;
-
-        public GameObject graphPrefab;
-
-        //grouList[0] = list of top menu buttons
-        //groupList[1] = panel for content
-        //groupList[2] = panel for advert
-        public List<List<GameObject>> groupList;
-
-        GameObject menuPanel;
-        Button menu;
-        Button favourites;
-        Button profile;
-        Vector2 contentWindowSize;
-        GameObject menuParent;
-
+        public Layout layout = new Layout();
+        [System.Serializable]
+        public struct Layout
+        {
+            public RectTransform canvas;
+            public RectTransform topMenu;
+            public RectTransform content;
+            public RectTransform ads;
+            public GameObject LayoutComponentPrefab;
+        }
         public void Awake()
         {
             AddISystemComponent(this);
@@ -43,103 +29,87 @@ namespace BS.Systems
         {
             Init();
             AddListeners();
+            AddLayoutComponents();
         }
         void Init()
         {
+            SetLayoutSize(new float[3] { .1f, .8f, .1f }); //Each value define height of game object, total must equal 1      
+        }
+        void SetLayoutSize(float[] layoutSizes)
+        {
+            float[] validatedSizes = Utils.ValidateLayoutSize(layoutSizes);
 
-            List<GameObject> layout = CreateLayout();
-            groupList = new List<List<GameObject>>();
-            for(int i = 0; i < layout.Count; i++)
+            float width = layout.canvas.rect.width;
+            float height = layout.canvas.rect.height;
+
+
+            RectTransform[] layouts = new RectTransform[3];
+            layouts[0] = layout.topMenu;
+            layouts[1] = layout.content;
+            layouts[2] = layout.ads;
+
+            for(int i = 0; i < layouts.Length; i++)
             {
-                if(i == 0)
+                layouts[i].sizeDelta = new Vector2(width, height * validatedSizes[i]);
+            }
+        }
+        void AddListeners()
+        {
+
+        }
+        void AddLayoutComponents()
+        {
+            string[] pages = new string[3]{"List","Graphs","Profile"};
+
+            for(int i = 0; i < pages.Length; i++)
+            {
+
+                var page = Instantiate(layout.LayoutComponentPrefab, layout.content);
+                page.transform.name = pages[i]+"Page";
+                var layoutComponentPage = page.GetComponent<LayoutComponentBehaviour>();
+                bool isActive;
+                if(i.Equals(0))
                 {
-                    groupList.Add(AddContent(layout[i], "Content", 3));
-                }
-                else if(i ==1)
-                {
-                   Instantiate(graphPrefab, layout[i].transform);               
+                    isActive = true;                                   
                 }
                 else
                 {
-                    groupList.Add(AddContent(layout[i], "Content", 1));
+                    isActive = false;                
                 }
+                layoutComponentPage.Init(LayoutComponentType.page, isActive,layout.content);
+
+                var button = Instantiate(layout.LayoutComponentPrefab, layout.topMenu);
+                button.transform.name = pages[i];
+                var layoutComponentButton = button.GetComponent<LayoutComponentBehaviour>();
+                layoutComponentButton.Init(LayoutComponentType.button, true,layout.content);
             }
-            menu=groupList[0][0].GetComponent<ButtonComponent>().button;
-            favourites = groupList[0][1].GetComponent<ButtonComponent>().button;
-            profile = groupList[0][2].GetComponent<ButtonComponent>().button;                                  
+
         }
-        void AddListeners()
-        {     
-            menu.onClick.AddListener(delegate {
-                Debug.Log("menu");            
-            });
-            favourites.onClick.AddListener(delegate {
-                Debug.Log("favourites");
-            });
-            profile.onClick.AddListener(delegate {
-                Debug.Log("profile");
-            });
-        }
-        List<GameObject> CreateLayout()
+
+
+
+
+    }
+    [Serializable]
+    public enum LayoutComponentType
+    {
+        button, page
+    }
+    [Serializable]
+    public class LayoutComponentProperties
+    {
+        public LayoutComponentType type;
+        public RectTransform parent;
+        public bool isActive;
+        public LayoutComponentProperties(LayoutComponentType type, RectTransform parent, bool isActive,RectTransform contentParent)
         {
-            List<GameObject> layoutGroupList = new List<GameObject>();
-            int verticalGroupCount = 3;
-            float canvasWidth = canvas.GetComponent<RectTransform>().sizeDelta.x;
-            float canvasHeight = canvas.GetComponent<RectTransform>().sizeDelta.y;
-
-            List<Vector2> sizeList = new List<Vector2>();
-            List<Type> typeList = new List<Type>();
-            List<string> nameList = new List<string>();
-
-
-            for(int i = 0; i < verticalGroupCount; i++)
-            {
-                float layoutHeight = 10;
-                if(i == 1)
-                {
-                    layoutHeight = 1.25f;
-                   
-                }
-
-                sizeList.Add(new Vector2(canvasWidth, canvasHeight / layoutHeight));             
-                typeList.Add(typeof(HorizontalLayoutGroup));
-                nameList.Add("Name" + i);
-                layoutGroupList.Add(AddGroup(typeList[i], nameList[i], canvas.transform, sizeList[i]));
-                GameObject AddGroup(Type type, string layoutName, Transform parent, Vector2 size)
-                {
-                    var newLayout = Instantiate(LayoutHolderPrefab, canvas.transform);
-                    newLayout.transform.name = layoutName;
-                    newLayout.transform.SetParent(parent);
-                    newLayout.AddComponent(type);
-                    newLayout.GetComponent<RectTransform>().sizeDelta = size;
-                    return newLayout;
-                }
-            }
-
-
-
-            canvas.GetComponent<VerticalLayoutGroup>().childControlHeight = false;
-            canvas.GetComponent<VerticalLayoutGroup>().childControlWidth = false;
-            contentWindowSize = sizeList[1];
-
-
-
-            return layoutGroupList;
-
+            this.type = type;
+            this.parent = parent;
+            this.isActive = isActive;
         }
-        List<GameObject> AddContent(GameObject layoutGameObject, string containerName, int containerNumber)
-        {
-            List<GameObject> containerList = new List<GameObject>();
-            for(int i = 0; i < containerNumber; i++)
-            {
-                var newContainer = Instantiate(ContentContainerPrefab, layoutGameObject.transform);
-                newContainer.transform.name = containerName;
-                containerList.Add(newContainer);
-            }
-            return containerList;
-        }
-
-      
-
+    }
+    public interface ILayoutComponent
+    {
+        public LayoutComponentProperties properties { get; set; }
     }
 }

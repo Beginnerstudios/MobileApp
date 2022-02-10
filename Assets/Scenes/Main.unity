@@ -170,13 +170,69 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 279114266}
     m_Modifications:
+    - target: {fileID: 475798418, guid: 1b3dbc0c617c35243816bf5a10b968e0, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 475798418, guid: 1b3dbc0c617c35243816bf5a10b968e0, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 475798418, guid: 1b3dbc0c617c35243816bf5a10b968e0, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 475798418, guid: 1b3dbc0c617c35243816bf5a10b968e0, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 475798418, guid: 1b3dbc0c617c35243816bf5a10b968e0, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 926593084, guid: 1b3dbc0c617c35243816bf5a10b968e0, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 926593084, guid: 1b3dbc0c617c35243816bf5a10b968e0, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 926593084, guid: 1b3dbc0c617c35243816bf5a10b968e0, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 926593084, guid: 1b3dbc0c617c35243816bf5a10b968e0, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 926593084, guid: 1b3dbc0c617c35243816bf5a10b968e0, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307168481, guid: 1b3dbc0c617c35243816bf5a10b968e0, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307168481, guid: 1b3dbc0c617c35243816bf5a10b968e0, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307168481, guid: 1b3dbc0c617c35243816bf5a10b968e0, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307168481, guid: 1b3dbc0c617c35243816bf5a10b968e0, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307168481, guid: 1b3dbc0c617c35243816bf5a10b968e0, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4600631501926957327, guid: 1b3dbc0c617c35243816bf5a10b968e0, type: 3}
       propertyPath: m_Name
       value: UI
-      objectReference: {fileID: 0}
-    - target: {fileID: 4689355937423065398, guid: 1b3dbc0c617c35243816bf5a10b968e0, type: 3}
-      propertyPath: m_RenderMode
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6376128201405684078, guid: 1b3dbc0c617c35243816bf5a10b968e0, type: 3}
       propertyPath: m_RootOrder
@@ -296,6 +352,37 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 18cd20b8c651f164fa76464af0b73224, type: 3}
+--- !u!1 &1307168480 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1307168480, guid: 1b3dbc0c617c35243816bf5a10b968e0, type: 3}
+  m_PrefabInstance: {fileID: 289173142}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1307168481
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1307168480}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 4
+  m_Spacing: 0
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 1
+  m_ChildControlHeight: 1
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!1001 &1446302195
 PrefabInstance:
   m_ObjectHideFlags: 0

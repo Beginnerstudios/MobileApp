@@ -159,12 +159,12 @@ namespace BS.CashFlow
                     if(graphType == GraphType.income)
                     {
                         value = Utils.GetIntValueFromDictionary(incomeList[i].incomeDict);
-                      
+
                     }
                     if(graphType == GraphType.balance)
                     {
                         value = Utils.GetIntValueFromDictionary(incomeList[i].balanceDict);
-                       
+
                     }
 
 
@@ -299,7 +299,7 @@ namespace BS.CashFlow
         {
             tooltip = Instantiate(graphsRectList[0].gameObject.GetComponent<GraphBehaviour>().prefabs.tooltip);
             tooltip.transform.SetParent(graphsParent);
-      
+
             tooltip.SetActive(true);
         }
     }
