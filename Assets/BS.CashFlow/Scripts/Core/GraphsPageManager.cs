@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using BS.Systems.UI;
 
 namespace BS.CashFlow
 {
-    public class GraphsManager : ExtendedMonoBehaviour
+    public class GraphsPageManager : ExtendedMonoBehaviour
     {
         #region Variables
         public RectTransform graphsParent;
@@ -34,10 +35,7 @@ namespace BS.CashFlow
         GameObject tooltip;
         #endregion
 
-        private void Awake()
-        {
-            Init();
-        }
+     
         void Init()
         {
             int graphCount = 2;
@@ -55,7 +53,7 @@ namespace BS.CashFlow
 
         private void Start()
         {
-
+            Init();
             buttons.all.onClick.AddListener(delegate
             {
                 DestroyGraph();

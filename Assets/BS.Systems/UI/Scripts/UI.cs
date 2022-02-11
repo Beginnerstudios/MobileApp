@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using System.Collections.Generic;
 
 
 namespace BS.Systems.UI
@@ -7,6 +8,7 @@ namespace BS.Systems.UI
     public class UI : ExtendedMonoBehaviour, ISystemComponent
     {
         public Layout layout = new Layout();
+        public Pages pages = new Pages();
         [System.Serializable]
         public struct Layout
         {
@@ -16,6 +18,12 @@ namespace BS.Systems.UI
             public RectTransform ads;
             public GameObject LayoutComponentPrefab;
         }
+        [System.Serializable]
+        public struct Pages
+        {
+            public List<GameObject> list;
+        }
+ 
         public void Awake()
         {
             AddISystemComponent(this);
@@ -33,7 +41,8 @@ namespace BS.Systems.UI
         }
         void Init()
         {
-            SetLayoutSize(new float[3] { .1f, .8f, .1f }); //Each value define height of game object, total must equal 1      
+            SetLayoutSize(new float[3] { .1f, .8f, .1f }); //Each value define height of game object, total must equal 1
+           
         }
         void SetLayoutSize(float[] layoutSizes)
         {
@@ -59,34 +68,41 @@ namespace BS.Systems.UI
         }
         void AddLayoutComponents()
         {
-            string[] pages = new string[3]{"List","Graphs","Profile"};
-
-            for(int i = 0; i < pages.Length; i++)
+            int i = 0;
+            if(pages.list.Count > 0)
             {
-
-                var page = Instantiate(layout.LayoutComponentPrefab, layout.content);
-                page.transform.name = pages[i]+"Page";
-                var layoutComponentPage = page.GetComponent<LayoutComponentBehaviour>();
-                bool isActive;
-                if(i.Equals(0))
+                foreach(GameObject pagePrefab in pages.list)
                 {
-                    isActive = true;                                   
-                }
-                else
-                {
-                    isActive = false;                
-                }
-                layoutComponentPage.Init(LayoutComponentType.page, isActive,layout.content);
+                    bool isActive = false;
+                    if(i.Equals(0))
+                    {
+                        isActive = true;
+                    }
 
-                var button = Instantiate(layout.LayoutComponentPrefab, layout.topMenu);
-                button.transform.name = pages[i];
-                var layoutComponentButton = button.GetComponent<LayoutComponentBehaviour>();
-                layoutComponentButton.Init(LayoutComponentType.button, true,layout.content);
+                    var page = Instantiate(pagePrefab);
+                    page.transform.SetParent(layout.content.transform);
+                    page.AddComponent<LayoutComponentBehaviour>().Init(LayoutComponentType.page, isActive, layout.content);
+                    page.transform.name = pagePrefab.name;
+
+
+                    var button = Instantiate(layout.LayoutComponentPrefab, layout.topMenu);
+                    button.transform.name = pagePrefab.name;
+                    var layoutComponentButton = button.GetComponent<LayoutComponentBehaviour>();
+                    layoutComponentButton.Init(LayoutComponentType.button, true, layout.content);
+
+
+                    i += 1;
+
+                }
+            }
+            else
+            {
+                Debug.Log("No pages ale selected.");
             }
 
         }
 
-
+     
 
 
     }
@@ -112,4 +128,5 @@ namespace BS.Systems.UI
     {
         public LayoutComponentProperties properties { get; set; }
     }
+
 }
