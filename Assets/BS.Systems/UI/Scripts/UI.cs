@@ -73,25 +73,31 @@ namespace BS.Systems.UI
             {
                 foreach(GameObject pagePrefab in pages.list)
                 {
-                    bool isActive = false;
-                    if(i.Equals(0))
+                    if(pagePrefab != null)
                     {
-                        isActive = true;
+                        bool isActive = false;
+                        if(i.Equals(0))
+                        {
+                            isActive = true;
+                        }
+                        var page = Instantiate(pagePrefab);
+                        page.transform.SetParent(layout.content.transform);
+                        page.AddComponent<LayoutComponentBehaviour>().Init(LayoutComponentType.page, isActive, layout.content);
+                        page.transform.name = pagePrefab.name;
+
+
+                       var button = Instantiate(layout.LayoutComponentPrefab, layout.topMenu);
+                       button.transform.name = pagePrefab.name;
+                       button.GetComponent<LayoutComponentBehaviour>().Init(LayoutComponentType.button, true, layout.content);
+                   
+
+
+                        i += 1;
+                   
                     }
+               
 
-                    var page = Instantiate(pagePrefab);
-                    page.transform.SetParent(layout.content.transform);
-                    page.AddComponent<LayoutComponentBehaviour>().Init(LayoutComponentType.page, isActive, layout.content);
-                    page.transform.name = pagePrefab.name;
-
-
-                    var button = Instantiate(layout.LayoutComponentPrefab, layout.topMenu);
-                    button.transform.name = pagePrefab.name;
-                    var layoutComponentButton = button.GetComponent<LayoutComponentBehaviour>();
-                    layoutComponentButton.Init(LayoutComponentType.button, true, layout.content);
-
-
-                    i += 1;
+          
 
                 }
             }

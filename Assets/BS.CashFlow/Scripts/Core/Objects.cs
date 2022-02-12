@@ -22,19 +22,18 @@ namespace BS.CashFlow
  
         public GraphValue(int balance, int income, string name, string date)
         {
-            CreateDictionaries(balance, income, name, date);
-      
+            CreateDictionaries(balance, income, name, date);     
         }
         void CreateDictionaries(int balance, int income, string name, string date)
         {
             balanceDict = new Dictionary<string, int>();
             balanceDict.Add("Balance", balance);
             incomeDict = new Dictionary<string, int>();
-            incomeDict.Add("Income", income);
+            incomeDict.Add("Income ", income);
             nameDict = new Dictionary<string, string>();
-            nameDict.Add("Name", name);
+            nameDict.Add("Name   ", name);
             dateDict = new Dictionary<string, string>();
-            dateDict.Add("Date", date);
+            dateDict.Add("Date   ", date);
         }
 
     }
@@ -202,7 +201,11 @@ namespace BS.CashFlow
                                 {
                                     difference *= -1;
                                 }
-                                valueList[i + 1].balanceDifferenceDict.Add("Balance Difference", difference);
+                      if( valueList[i + 1].balanceDifferenceDict.TryGetValue("Balance Difference", out difference) == false)
+                        {
+                            valueList[i + 1].balanceDifferenceDict.Add("Balance Difference", difference);
+                        }
+                             
     
                     }
                     if(graphType == GraphType.income)
@@ -220,8 +223,10 @@ namespace BS.CashFlow
                         {
                             difference *= -1;
                         }
-                        valueList[i + 1].incomeDifferenceDict.Add("Income Difference", difference);
-
+                        if(valueList[i + 1].incomeDifferenceDict.TryGetValue("Income Difference", out difference) == false)
+                        {
+                            valueList[i + 1].incomeDifferenceDict.Add("Income Difference", difference);
+                        }
                     }
 
 

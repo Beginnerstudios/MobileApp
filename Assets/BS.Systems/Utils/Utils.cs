@@ -31,6 +31,11 @@ namespace BS.Systems
             var butTextGO = Object.Instantiate(new GameObject(gameObject.transform.name), but.transform);
             butTextGO.AddComponent<TextMeshProUGUI>().text = gameObject.transform.name;
             butTextGO.GetComponent<TextMeshProUGUI>().color = Color.black;
+            butTextGO.GetComponent<TextMeshProUGUI>().alignment = TextAlignmentOptions.Center;
+            butTextGO.gameObject.GetComponent<RectTransform>().anchorMin = new Vector2(0, 0);
+            butTextGO.gameObject.GetComponent<RectTransform>().anchorMax = new Vector2(1,1);
+            butTextGO.gameObject.GetComponent<RectTransform>().pivot = new Vector2(.5f,.5f);
+          
             but.targetGraphic = img;
 
             but.onClick.AddListener(delegate

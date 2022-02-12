@@ -62,9 +62,11 @@ namespace BS.CashFlow
             }
             void SetColor()
             {
+                widgetText.color = Color.cyan;
                 if(graphType == GraphType.balance)
                 {                  
-                        widgetText.color = Color.green;                                 
+                        widgetText.color = Color.green; 
+                   
                 }
                 else if(graphType == GraphType.income)
                 {
