@@ -5,9 +5,10 @@ using UnityEngine;
 
 namespace BS.CashFlow
 {
+    public enum GraphObject { point, connection }
     public class Objects : ExtendedMonoBehaviour
     {
-
+    
     }
     public class GraphValue
     {
@@ -180,61 +181,59 @@ namespace BS.CashFlow
         }
         public List<GraphValue> CountDifferences(List<GraphValue> valueList, GraphType graphType)
         {
-
-            int difference = 0;
-            for(int i = 0; i < valueList.Count - 1; i++)
-            {
-                if(i + 1 < valueList.Count)
+             int difference = 0;
+                for(int i = 0; i < valueList.Count - 1; i++)
                 {
-                    if(graphType == GraphType.balance)
+                    if(i + 1 < valueList.Count)
                     {
-                        int value = Utils.GetIntValueFromDictionary(valueList[i].balanceDict);
-                        int value1 = Utils.GetIntValueFromDictionary(valueList[i+1].balanceDict);
-
-                                difference = value - value1;
-
-                                if(difference < 0)
-                                {
-                                    difference *= -1;
-                                }
-                                if(value > value1)
-                                {
-                                    difference *= -1;
-                                }
-                      if( valueList[i + 1].balanceDifferenceDict.TryGetValue("Balance Difference", out difference) == false)
+                        if(graphType == GraphType.balance)
                         {
+                            int value = Utils.GetIntValueFromDictionary(valueList[i].balanceDict);
+                            int value1 = Utils.GetIntValueFromDictionary(valueList[i + 1].balanceDict);
+
+                            difference = value - value1;
+
+                            if(difference < 0)
+                            {
+                                difference *= -1;
+                            }
+                            if(value > value1)
+                            {
+                                difference *= -1;
+                            }
+
                             valueList[i + 1].balanceDifferenceDict.Add("Balance Difference", difference);
-                        }
-                             
-    
-                    }
-                    if(graphType == GraphType.income)
-                    {
-                        int value = Utils.GetIntValueFromDictionary(valueList[i].incomeDict);
-                        int value1 = Utils.GetIntValueFromDictionary(valueList[i+1].incomeDict);
 
-                        difference = value - value1;
 
-                        if(difference < 0)
-                        {
-                            difference *= -1;
                         }
-                        if(value > value1)
+                        if(graphType == GraphType.income)
                         {
-                            difference *= -1;
-                        }
-                        if(valueList[i + 1].incomeDifferenceDict.TryGetValue("Income Difference", out difference) == false)
-                        {
+                            int value = Utils.GetIntValueFromDictionary(valueList[i].incomeDict);
+                            int value1 = Utils.GetIntValueFromDictionary(valueList[i + 1].incomeDict);
+
+                            difference = value - value1;
+
+                            if(difference < 0)
+                            {
+                                difference *= -1;
+                            }
+                            if(value > value1)
+                            {
+                                difference *= -1;
+                            }
+
                             valueList[i + 1].incomeDifferenceDict.Add("Income Difference", difference);
-                        }
-                    }
 
+                        }
+
+
+                    }
 
                 }
 
-            }
-
+          
             return valueList;
+
         }
     }
     public enum GraphType

@@ -231,6 +231,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 195456410928667587, guid: 1b3dbc0c617c35243816bf5a10b968e0, type: 3}
+      propertyPath: prefabs.graphPage
+      value: 
+      objectReference: {fileID: 3651557658508230529, guid: 91fb829f59ad8d249b8f52cf3927ff4f, type: 3}
+    - target: {fileID: 195456410928667587, guid: 1b3dbc0c617c35243816bf5a10b968e0, type: 3}
       propertyPath: pages.list.Array.size
       value: 2
       objectReference: {fileID: 0}
@@ -253,6 +257,10 @@ PrefabInstance:
     - target: {fileID: 4600631501926957327, guid: 1b3dbc0c617c35243816bf5a10b968e0, type: 3}
       propertyPath: m_Name
       value: UI
+      objectReference: {fileID: 0}
+    - target: {fileID: 4689355937423065398, guid: 1b3dbc0c617c35243816bf5a10b968e0, type: 3}
+      propertyPath: m_AdditionalShaderChannelsFlag
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 6376128201405684078, guid: 1b3dbc0c617c35243816bf5a10b968e0, type: 3}
       propertyPath: m_RootOrder

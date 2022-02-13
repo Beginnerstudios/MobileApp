@@ -497,7 +497,7 @@ MonoBehaviour:
     topMenu: {fileID: 926593084}
     content: {fileID: 1307168481}
     ads: {fileID: 475798418}
-    LayoutComponentPrefab: {fileID: 9219553944020026163, guid: 93ad549b622452547979dff0cd1ade63, type: 3}
+    LayoutComponentPrefab: {fileID: 3502881888166917136, guid: 93ad549b622452547979dff0cd1ade63, type: 3}
   pages:
     list:
     - {fileID: 3651557658508230529, guid: 91fb829f59ad8d249b8f52cf3927ff4f, type: 3}

@@ -35,12 +35,10 @@ namespace BS.CashFlow
         #endregion
 
 
-  
+
 
         void Start()
         {
-
-            CreateGraphsWidgets(2);
             AddListeners();
             void AddListeners()
             {
@@ -54,7 +52,7 @@ namespace BS.CashFlow
                 });
                 buttons.sixMonths.onClick.AddListener(delegate
                 {
-                    DisplayExistingValues(incomeList.Count-6);
+                    DisplayExistingValues(incomeList.Count - 6);
                 });
                 buttons.Generate.onClick.AddListener(delegate
                 {
@@ -102,41 +100,60 @@ namespace BS.CashFlow
             {
                 GraphValues gV = new GraphValues();
                 incomeList = gV.GenerateDummyData(Random.Range(1, 12));
-
+                gV.CountDifferences(incomeList,0);
+                gV.CountDifferences(incomeList,(GraphType)1);
             }
         }
         void DisplayExistingValues(int displayedValuesCount)
         {
-            DestroyGraph();
-            CreateGrapth(displayedValuesCount);
-            void CreateGrapth(int startIndex)
+            DestroyGraphs();        
+            CreateGraph(displayedValuesCount);
+            void CreateGraph(int startIndex)
             {
 
-
-                CreateTooltip();
-                void CreateTooltip()
+            
+                CreateWidgets(2);
+                void CreateWidgets(int graphsCount)
                 {
+                    graphsRectList = new List<RectTransform>();
+                    int widgetCount = graphsCount + 1;
+
+                    for(int i = 0; i < graphsCount; i++)
+                    {
+                        var newGraph = Instantiate(prefabs.graph, graphsParent);
+                        newGraph.SetActive(true);
+                        newGraph.GetComponent<GraphBehaviour>().graphType = (GraphType)i;
+                        var newRect = newGraph.GetComponent<RectTransform>();
+                        newRect.sizeDelta = new Vector2(graphsParent.sizeDelta.x, graphsParent.sizeDelta.y / widgetCount);
+                        graphsRectList.Add(newRect);
+                    }
                     tooltip = Instantiate(graphsRectList[0].gameObject.GetComponent<GraphBehaviour>().prefabs.tooltip);
                     tooltip.transform.SetParent(graphsParent);
                     tooltip.SetActive(true);
+
                 }
 
-                List<GraphValue> valuList = new List<GraphValue>();
-                List<GraphValue> valuList2 = new List<GraphValue>();
-                int startIndex2 = startIndex;
 
-
-                while(startIndex < incomeList.Count)
+                List<GraphValue> GetValues(List<GraphValue> incomeList,int startIndex)
                 {
-                    valuList.Add(incomeList[startIndex]);
-                    valuList2.Add(incomeList[startIndex2]);
-                    startIndex++;
-                    startIndex2++;
+                   
+                    List<GraphValue> valueList = new List<GraphValue>();
+                    while(startIndex < incomeList.Count)
+                    {
+                        valueList.Add(incomeList[startIndex]);                     
+                        startIndex++;                 
+                    }
+                
+                    return valueList;
+                }
+                List<GraphValue> valueList = GetValues(incomeList,startIndex);
+                
+                for(int i = 0; i < 2; i++)
+                {
+                    ShowGraph(valueList, graphsRectList[i]);
                 }
 
 
-                ShowGraph(new GraphValues().CountDifferences(valuList, GraphType.balance), graphsRectList[0]);
-                ShowGraph(new GraphValues().CountDifferences(valuList2, GraphType.income), graphsRectList[1]);
 
                 void ShowGraph(List<GraphValue> incomeList, RectTransform graphRect)
                 {
@@ -250,10 +267,10 @@ namespace BS.CashFlow
                         rTincomeGO.anchoredPosition = anchoredPosition + new Vector2(0, 0);
                         rTincomeGO.anchorMin = new Vector2(0, 0);
                         rTincomeGO.anchorMax = new Vector2(0, 0);
-                        var incomeComponent = rTincomeGO.GetComponent<PointBehaviour>();
+                        var incomeComponent = rTincomeGO.GetComponent<GraphButtonBehaviour>();
                         incomeComponent.incomeObj = income;
-                        incomeComponent.index = index;
-                        incomeComponent.incomeList = incomeList;
+                        incomeComponent.type = GraphObject.point;
+                 
                         incomeComponent.tooltip = tooltip.GetComponent<TooltipBehaviour>();
                         incomeComponent.graphType = graphType;
                         return incomeGO;
@@ -274,12 +291,14 @@ namespace BS.CashFlow
                         rectTransform.anchorMin = new Vector2(0, 0);
                         rectTransform.anchorMax = new Vector2(0, 0);
                         rectTransform.anchoredPosition = dotPositionA + dir * distance * .5f;
-                        rectTransform.localEulerAngles = new Vector3(0, 0, UtilsClass.GetAngleFromVectorFloat(dir));
+                        rectTransform.localEulerAngles = new Vector3(0, 0, BS.Systems.Utils.GetAngleFromVectorFloat(dir));
 
-                        var incomeComponent = gameObject.GetComponent<ConnectionBehaviour>();
+                        var incomeComponent = gameObject.GetComponent<GraphButtonBehaviour>();
                         incomeComponent.incomeObj = income;
                         incomeComponent.graphType = graphType;
+                        incomeComponent.type = GraphObject.connection;
                         incomeComponent.tooltip = tooltip.GetComponent<TooltipBehaviour>();
+                       
 
                     }
                     void CreateLabel(RectTransform graphRect, Vector2 position, int i)
@@ -311,48 +330,22 @@ namespace BS.CashFlow
 
                 }
             }
-            void DestroyGraph()
+            void DestroyGraphs()
             {
                 foreach(Transform t in graphsParent)
-                {
-                    if(t.name == "Tooltip(Clone)")
-                    {
-                        Destroy(t.gameObject);
-                    }
-                    if(t.childCount > 1 && t.name != "Tooltip(Clone)")
-                    {
-                        foreach(Transform child in t.transform)
-                        {
-                            if(child.name != "Assets")
-                            {
-                                Destroy(child.gameObject);
-
-                            }
-                        }
-                    }
+                {            
+                    Destroy(t.gameObject);
                 }
 
-            }
-        }            
-        void CreateGraphsWidgets(int graphsCount)
-        {           
-            graphsRectList = new List<RectTransform>();
-            for(int i = 0; i < graphsCount; i++)
-            {
-                var newGraph = Instantiate(prefabs.graph, graphsParent);
-                newGraph.SetActive(true);
-                newGraph.GetComponent<GraphBehaviour>().graphType = (GraphType)i;
-                graphsRectList.Add(newGraph.GetComponent<RectTransform>());
-            }
-       
-
+            }          
         }
-
-      
-     
+    
 
 
 
-     
+
+
+
+
     }
 }

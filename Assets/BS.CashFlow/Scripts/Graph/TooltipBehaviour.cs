@@ -82,6 +82,7 @@ namespace BS.CashFlow
                     {
                         key = Utils.GetStringKeyFromDictionary(incomeObj.balanceDifferenceDict).ToString();
                         value = Utils.GetIntValueFromDictionary(incomeObj.balanceDifferenceDict).ToString();
+                      
                     }
                     if(graphType == GraphType.income)
                     {

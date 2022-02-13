@@ -26,18 +26,10 @@ namespace BS.Systems
         }
         public static void CreatePageButton(GameObject gameObject,RectTransform contentParent)
         {
-            var but = gameObject.AddComponent<Button>();
-            var img = gameObject.AddComponent<Image>();
-            var butTextGO = Object.Instantiate(new GameObject(gameObject.transform.name), but.transform);
-            butTextGO.AddComponent<TextMeshProUGUI>().text = gameObject.transform.name;
-            butTextGO.GetComponent<TextMeshProUGUI>().color = Color.black;
-            butTextGO.GetComponent<TextMeshProUGUI>().alignment = TextAlignmentOptions.Center;
-            butTextGO.gameObject.GetComponent<RectTransform>().anchorMin = new Vector2(0, 0);
-            butTextGO.gameObject.GetComponent<RectTransform>().anchorMax = new Vector2(1,1);
-            butTextGO.gameObject.GetComponent<RectTransform>().pivot = new Vector2(.5f,.5f);
-          
+            var but = gameObject.GetComponent<Button>();
+            var img = gameObject.GetComponent<Image>();
+                           
             but.targetGraphic = img;
-
             but.onClick.AddListener(delegate
             {
                 var butIndex = gameObject.transform.GetSiblingIndex();
@@ -53,6 +45,15 @@ namespace BS.Systems
                     }
                 }
             });
+        }
+        public static float GetAngleFromVectorFloat(Vector3 dir)
+        {
+            dir = dir.normalized;
+            float n = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            if(n < 0)
+                n += 360;
+
+            return n;
         }
     }
 }

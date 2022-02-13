@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using System.Collections.Generic;
+using TMPro;
 
 
 namespace BS.Systems.UI
@@ -35,14 +36,12 @@ namespace BS.Systems.UI
 
         private void Start()
         {
-            Init();
-            AddListeners();
+            Init();      
             AddLayoutComponents();
         }
         void Init()
         {
-            SetLayoutSize(new float[3] { .1f, .8f, .1f }); //Each value define height of game object, total must equal 1
-           
+            SetLayoutSize(new float[3] { .1f, .8f, .1f }); //Each value define height of game object, total must equal 1           
         }
         void SetLayoutSize(float[] layoutSizes)
         {
@@ -62,16 +61,14 @@ namespace BS.Systems.UI
                 layouts[i].sizeDelta = new Vector2(width, height * validatedSizes[i]);
             }
         }
-        void AddListeners()
-        {
-
-        }
+    
         void AddLayoutComponents()
-        {
+        {            
+            List<GameObject> pageList = pages.list;
             int i = 0;
-            if(pages.list.Count > 0)
+            if(pageList.Count > 0)
             {
-                foreach(GameObject pagePrefab in pages.list)
+                foreach(GameObject pagePrefab in pageList)
                 {
                     if(pagePrefab != null)
                     {
@@ -80,24 +77,18 @@ namespace BS.Systems.UI
                         {
                             isActive = true;
                         }
-                        var page = Instantiate(pagePrefab);
-                        page.transform.SetParent(layout.content.transform);
-                        page.AddComponent<LayoutComponentBehaviour>().Init(LayoutComponentType.page, isActive, layout.content);
+                        var page = Instantiate(pagePrefab, layout.content.transform);
+                        page.GetComponent<LayoutComponentBehaviour>().Init(LayoutComponentType.page, isActive, layout.content,"");
                         page.transform.name = pagePrefab.name;
 
 
-                       var button = Instantiate(layout.LayoutComponentPrefab, layout.topMenu);
-                       button.transform.name = pagePrefab.name;
-                       button.GetComponent<LayoutComponentBehaviour>().Init(LayoutComponentType.button, true, layout.content);
-                   
-
+                        var button = Instantiate(layout.LayoutComponentPrefab, layout.topMenu);
+                        button.transform.name = pagePrefab.name;
+                        button.GetComponent<LayoutComponentBehaviour>().Init(LayoutComponentType.button, true, layout.content,button.transform.name);
 
                         i += 1;
-                   
-                    }
-               
 
-          
+                    }
 
                 }
             }
@@ -105,12 +96,7 @@ namespace BS.Systems.UI
             {
                 Debug.Log("No pages ale selected.");
             }
-
-        }
-
-     
-
-
+        }    
     }
     [Serializable]
     public enum LayoutComponentType
@@ -123,11 +109,15 @@ namespace BS.Systems.UI
         public LayoutComponentType type;
         public RectTransform parent;
         public bool isActive;
-        public LayoutComponentProperties(LayoutComponentType type, RectTransform parent, bool isActive,RectTransform contentParent)
+        public string text;
+     
+        public LayoutComponentProperties(LayoutComponentType type, RectTransform parent, bool isActive,RectTransform contentParent,string text)
         {
             this.type = type;
             this.parent = parent;
             this.isActive = isActive;
+            this.text = text;
+           
         }
     }
     public interface ILayoutComponent

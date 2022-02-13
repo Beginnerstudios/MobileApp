@@ -10,5 +10,5 @@ namespace BS.CashFlow
 	{
         public TextMeshProUGUI key;
         public TextMeshProUGUI value;      
-    }
+        }
 }

@@ -10,20 +10,29 @@ namespace BS.Systems.UI
     {
        [field: SerializeField]
         public LayoutComponentProperties properties { get;set; }
+        public TextMeshProUGUI textField;
+        
 
         void Awake()
         {
           
         }
  
-        public void Init(LayoutComponentType type,bool isActive,RectTransform contentParent)
+        public void Init(LayoutComponentType type,bool isActive,RectTransform contentParent,string text)
         {
-            properties = new LayoutComponentProperties(type, gameObject.transform.parent.GetComponent<RectTransform>(),isActive,contentParent);
             gameObject.SetActive(isActive);
+            properties = new LayoutComponentProperties(type, gameObject.transform.parent.GetComponent<RectTransform>(),isActive,contentParent,text);                             
+            textField.text = properties.text;
+
+            if(properties.type == LayoutComponentType.page)
+            {
+             
+            }
 
             if(properties.type == LayoutComponentType.button)
             {
             Utils.CreatePageButton(gameObject,contentParent);
+          
             }
         
         }
