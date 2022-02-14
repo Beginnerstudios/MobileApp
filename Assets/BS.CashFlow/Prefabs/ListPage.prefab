@@ -1908,10 +1908,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3651557658508230530}
-  - component: {fileID: 3651557658508230532}
   - component: {fileID: 1137887776317124466}
+  - component: {fileID: 4242420989513853159}
   m_Layer: 5
-  m_Name: GraphsPage
+  m_Name: ListPage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1937,25 +1937,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &3651557658508230532
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3651557658508230529}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9814baa7420bd744da2cbb5851b02489, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  graphsParent: {fileID: 2922693649239568813}
-  prefabs:
-    graph: {fileID: 7747977667785019765}
-  buttons:
-    sixMonths: {fileID: 3651557658397911190}
-    threeMonths: {fileID: 3651557657750562999}
-    all: {fileID: 3374342140881185404}
 --- !u!114 &1137887776317124466
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1974,6 +1955,25 @@ MonoBehaviour:
     isActive: 0
     text: 
   textField: {fileID: 1701458041227555038}
+--- !u!114 &4242420989513853159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3651557658508230529}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49ae4efb3e8d17748a5005091e5bc55f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  graphsParent: {fileID: 2922693649239568813}
+  prefabs:
+    graph: {fileID: 7747977667785019765}
+  buttons:
+    sixMonths: {fileID: 3651557658397911190}
+    threeMonths: {fileID: 3651557657750562999}
+    all: {fileID: 3374342140881185404}
 --- !u!1 &4340311272749109810
 GameObject:
   m_ObjectHideFlags: 0

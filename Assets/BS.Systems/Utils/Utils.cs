@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using BS.CashFlow;
 
 
 namespace BS.Systems
@@ -38,11 +39,15 @@ namespace BS.Systems
                     if (rT.gameObject.transform.GetSiblingIndex() == butIndex)
                     {                    
                         rT.gameObject.SetActive(true);
+                        if (butIndex.Equals(1) || (butIndex.Equals(2)))
+                        {
+                            rT.gameObject.GetComponent<IGraphValueDisplay>().DisplayExistingValues(0);
+                        }
                     }
                     else
                     {
                         rT.gameObject.SetActive(false);
-                    }
+                    }               
                 }
             });
         }
