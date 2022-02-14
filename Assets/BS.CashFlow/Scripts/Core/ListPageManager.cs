@@ -25,54 +25,28 @@ namespace BS.CashFlow
         {
             public GameObject graph;
         }
-
-        List<RectTransform> graphsRectList;
-        List<GraphValue> incomeList;
-
-
-        public List<int> exapnsesList { get; private set; }
-        GameObject tooltip;
         #endregion
 
         void Start()
         {
-           
-            AddListeners();                    
-            void AddListeners()
-            {
-                buttons.all.onClick.AddListener(delegate
-                {
-                    DisplayExistingValues(0);
-                });
-                buttons.threeMonths.onClick.AddListener(delegate
-                {
-                    DisplayExistingValues(incomeList.Count - 3);
-                });
-                buttons.sixMonths.onClick.AddListener(delegate
-                {
-                    DisplayExistingValues(incomeList.Count - 6);
-                });           
-            }          
+            AddListeners();
         }
-    
         public void DisplayExistingValues(int displayedValuesCount)
         {
-            incomeList = Values.incomeList;
-         
-           
+            List<GraphValue> incomeList = Values.incomeList;
             UpdateButtons();
-            DestroyGraphs();        
+            DestroyGraphs();
             CreateGraph(displayedValuesCount);
             void CreateGraph(int startIndex)
-            {
+            {           
+                GameObject tooltip;
 
-            
+                    List<RectTransform>  graphsRectList = new List<RectTransform>();
                 CreateWidgets(2);
                 void CreateWidgets(int graphsCount)
                 {
-                    graphsRectList = new List<RectTransform>();
                     int widgetCount = graphsCount + 1;
-                  
+
                     for(int i = 0; i < graphsCount; i++)
                     {
                         var newGraph = Instantiate(prefabs.graph, graphsParent);
@@ -81,29 +55,27 @@ namespace BS.CashFlow
                         var newRect = newGraph.GetComponent<RectTransform>();
                         newRect.sizeDelta = new Vector2(graphsParent.sizeDelta.x, graphsParent.sizeDelta.y / widgetCount);
                         graphsRectList.Add(newRect);
-                      
                     }
                     tooltip = Instantiate(graphsRectList[0].gameObject.GetComponent<GraphBehaviour>().prefabs.tooltip);
                     tooltip.transform.SetParent(graphsParent);
                     tooltip.SetActive(true);
-                    
                 }
 
 
-                List<GraphValue> GetValues(List<GraphValue> incomeList,int startIndex)
+                List<GraphValue> GetValues(List<GraphValue> incomeList, int startIndex)
                 {
-                   
-                    List<GraphValue> valueList = new List<GraphValue>();                  
+
+                    List<GraphValue> valueList = new List<GraphValue>();
                     while(startIndex < incomeList.Count)
                     {
-                        valueList.Add(incomeList[startIndex]);                     
-                        startIndex++;                 
+                        valueList.Add(incomeList[startIndex]);
+                        startIndex++;
                     }
-                
+
                     return valueList;
                 }
-                List<GraphValue> valueList = GetValues(incomeList,startIndex);
-                
+                List<GraphValue> valueList = GetValues(incomeList, startIndex);
+
                 for(int i = 0; i < 2; i++)
                 {
                     ShowGraph(valueList, graphsRectList[i]);
@@ -226,7 +198,7 @@ namespace BS.CashFlow
                         var incomeComponent = rTincomeGO.GetComponent<GraphButtonBehaviour>();
                         incomeComponent.incomeObj = income;
                         incomeComponent.type = GraphObject.point;
-                 
+
                         incomeComponent.tooltip = tooltip.GetComponent<TooltipBehaviour>();
                         incomeComponent.graphType = graphType;
                         return incomeGO;
@@ -254,7 +226,7 @@ namespace BS.CashFlow
                         incomeComponent.graphType = graphType;
                         incomeComponent.type = GraphObject.connection;
                         incomeComponent.tooltip = tooltip.GetComponent<TooltipBehaviour>();
-                       
+
 
                     }
                     void CreateLabel(RectTransform graphRect, Vector2 position, int i)
@@ -289,7 +261,7 @@ namespace BS.CashFlow
             void DestroyGraphs()
             {
                 foreach(Transform t in graphsParent)
-                {            
+                {
                     Destroy(t.gameObject);
                 }
 
@@ -324,6 +296,27 @@ namespace BS.CashFlow
 
 
             }
+        }
+
+        void AddListeners()
+        {
+          
+            buttons.all.onClick.AddListener(delegate
+            {
+                    DisplayExistingValues(0);
+            });
+            buttons.threeMonths.onClick.AddListener(delegate
+            {
+              
+                    DisplayExistingValues(Values.incomeList.Count - 3);
+                
+            });
+            buttons.sixMonths.onClick.AddListener(delegate
+            {
+                
+                    DisplayExistingValues(Values.incomeList.Count - 6);
+                
+            });
         }
 
     }

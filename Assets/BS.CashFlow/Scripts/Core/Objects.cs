@@ -22,9 +22,10 @@ namespace BS.CashFlow
         public Dictionary<string, int> incomeDifferenceDict = new Dictionary<string, int>();
         public Dictionary<string, string> nameDict = new Dictionary<string, string>();
         public Dictionary<string, string> dateDict = new Dictionary<string, string>();
-   
-     
- 
+        //dashboard
+  
+
+
         public GraphValue(int balance, int income, string name, string date)
         {
             CreateDictionaries(balance, income, name, date);     
@@ -140,33 +141,26 @@ namespace BS.CashFlow
     }
     public class GraphValues
     {
-        protected List<GraphValue> valuesList;
+         protected List<GraphValue> valuesList;
+         Dictionary<string, int> totalItemsCountDict = new Dictionary<string, int>();
+         Dictionary<string, int> totalIncomeDict = new Dictionary<string, int>();
+         Dictionary<string, int> currentBalanceDict = new Dictionary<string, int>();
+         Dictionary<string, int> latestIncome = new Dictionary<string, int>();
 
+        public List<Dictionary<string,int>> dashBoardList = new List<Dictionary<string, int>>();
         public GraphValues(List<GraphValue> valuesList)
         {
             this.valuesList = valuesList;
+            CreateDictionaries();
         }
-        public GraphValues()
+     
+
+        void CreateDictionaries()
         {
-
-        }
-        public List<GraphValue> GenerateDummyData(int valueCount)
-        {
-            List<GraphValue> valueList = new List<GraphValue>();
-
-            for(int y = 0; y < valueCount; y++)
-            {
-                int balance = UnityEngine.Random.Range(0, 1000000);
-                int income = UnityEngine.Random.Range(5000, 100000);
-                List<string> nameList = new List<string>() { "Vodafone", "Unicorn", "GameDev", "Donate" };
-                List<string> dateList = new List<string>() { "30.01.2022", "01.02.2022", "02.02.2022" };
-                int randomName = UnityEngine.Random.Range(0, nameList.Count);
-                int randomDate = UnityEngine.Random.Range(0, dateList.Count);
-
-                GraphValue gV = new GraphValue(balance, income, nameList[randomName], dateList[randomDate]);               
-                valueList.Add(gV);
-            }
-            return valueList;
+            totalItemsCountDict = new Dictionary<string, int>();
+            totalIncomeDict = new Dictionary<string, int>();                 
+            currentBalanceDict = new Dictionary<string, int>();                 
+            latestIncome = new Dictionary<string, int>();                 
         }
         public Tuple<GraphValue, GraphValue> GetSiblings(int index)
         {
@@ -237,6 +231,24 @@ namespace BS.CashFlow
 
           
             return valueList;
+
+        }
+        public void UpdateDisctionaries()
+        {
+            int totalIncome = 0;
+            foreach(GraphValue item in valuesList)
+            {
+              totalIncome+= Utils.GetIntValueFromDictionary(item.incomeDict);
+            }
+            totalIncomeDict.Add("Total income: ",totalIncome);
+            totalItemsCountDict.Add("Total items: ",valuesList.Count);
+            currentBalanceDict.Add("Current Balance: ", Utils.GetIntValueFromDictionary(valuesList[valuesList.Count-1].balanceDict));
+            latestIncome.Add("Latest income: ", Utils.GetIntValueFromDictionary(valuesList[valuesList.Count-1].incomeDict));
+
+            dashBoardList.Add(totalItemsCountDict);
+            dashBoardList.Add(totalIncomeDict);
+            dashBoardList.Add(currentBalanceDict);
+            dashBoardList.Add(latestIncome);
 
         }
     }

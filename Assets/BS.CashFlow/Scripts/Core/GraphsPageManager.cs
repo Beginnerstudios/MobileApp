@@ -1,5 +1,4 @@
 using BS.Systems;
-using CodeMonkey.Utils;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -7,7 +6,7 @@ using UnityEngine.UI;
 
 namespace BS.CashFlow
 {
-    public class GraphsPageManager : ExtendedMonoBehaviour,IGraphValueDisplay
+    public class GraphsPageManager : ExtendedMonoBehaviour, IGraphValueDisplay
     {
         #region Variables
         public RectTransform graphsParent;
@@ -18,7 +17,7 @@ namespace BS.CashFlow
         {
             public Button sixMonths;
             public Button threeMonths;
-            public Button all;       
+            public Button all;
         }
         [System.Serializable]
         public struct Prefabs
@@ -26,82 +25,81 @@ namespace BS.CashFlow
             public GameObject graph;
         }
 
-        List<RectTransform> graphsRectList;
-        List<GraphValue> incomeList;
-  
-        GameObject tooltip;
+    
+
         #endregion
-
-
 
 
         void Start()
         {
-           incomeList = Values.incomeList;
             AddListeners();
-            void AddListeners()
-            {
-                buttons.all.onClick.AddListener(delegate
-                {
-                    DisplayExistingValues(0);
-                });
-                buttons.threeMonths.onClick.AddListener(delegate
-                {
-                    DisplayExistingValues(incomeList.Count - 3);
-                });
-                buttons.sixMonths.onClick.AddListener(delegate
-                {
-                    DisplayExistingValues(incomeList.Count - 6);
-                });           
-            }
-
-        }      
+        }
         public void DisplayExistingValues(int displayedValuesCount)
         {
-            incomeList = Values.incomeList;
+            List<GraphValue> incomeList = Values.incomeList;
             UpdateButtons();
-            DestroyGraphs();        
+            DestroyGraphs();
             CreateGraph(displayedValuesCount);
             void CreateGraph(int startIndex)
             {
+                List<RectTransform> graphsRectList;
+                GameObject tooltip = null;
 
-            
+
                 CreateWidgets(2);
                 void CreateWidgets(int graphsCount)
                 {
                     graphsRectList = new List<RectTransform>();
                     int widgetCount = graphsCount + 1;
 
-                    for(int i = 0; i < graphsCount; i++)
+                  
+
+                    for(int i = 0; i < widgetCount; i++)
                     {
-                        var newGraph = Instantiate(prefabs.graph, graphsParent);
-                        newGraph.SetActive(true);
-                        newGraph.GetComponent<GraphBehaviour>().graphType = (GraphType)i;
-                        var newRect = newGraph.GetComponent<RectTransform>();
-                        newRect.sizeDelta = new Vector2(graphsParent.sizeDelta.x, graphsParent.sizeDelta.y / widgetCount);
-                        graphsRectList.Add(newRect);
+                        if(i == 0 || i == 1)
+                        {
+                            var newGraph = Instantiate(prefabs.graph);
+                            newGraph.transform.SetParent(graphsParent);
+                            newGraph.GetComponent<GraphBehaviour>().graphType = (GraphType)i;
+                            graphsRectList.Add(newGraph.GetComponent<RectTransform>());
+                        }
+                        if(i.Equals(2))
+                        {
+                            tooltip = Instantiate(graphsRectList[0].gameObject.GetComponent<GraphBehaviour>().prefabs.tooltip);
+                            tooltip.transform.SetParent(graphsParent);
+                            graphsRectList.Add(tooltip.GetComponent<RectTransform>());
+                        }
+
                     }
-                    tooltip = Instantiate(graphsRectList[0].gameObject.GetComponent<GraphBehaviour>().prefabs.tooltip);
-                    tooltip.transform.SetParent(graphsParent);
-                    tooltip.SetActive(true);
+                    
+              
+                   
+                    foreach(RectTransform rT in graphsRectList)
+                    {
+                        float width = 700;
+                        float height = 1000;
+                        rT.sizeDelta = new Vector2(width,height/widgetCount);
+                        rT.gameObject.SetActive(true);                
+                    }
+
 
                 }
 
 
-                List<GraphValue> GetValues(List<GraphValue> incomeList,int startIndex)
+                List<GraphValue> GetValues(List<GraphValue> incomeList, int startIndex)
                 {
-                   
+
                     List<GraphValue> valueList = new List<GraphValue>();
                     while(startIndex < incomeList.Count)
                     {
-                        valueList.Add(incomeList[startIndex]);                     
-                        startIndex++;                 
+                        valueList.Add(incomeList[startIndex]);
+                        startIndex++;
                     }
-                
+
                     return valueList;
                 }
-                List<GraphValue> valueList = GetValues(incomeList,startIndex);
-                
+                List<GraphValue> valueList = GetValues(incomeList, startIndex);
+
                 for(int i = 0; i < 2; i++)
                 {
                     ShowGraph(valueList, graphsRectList[i]);
@@ -224,7 +222,7 @@ namespace BS.CashFlow
                         var incomeComponent = rTincomeGO.GetComponent<GraphButtonBehaviour>();
                         incomeComponent.incomeObj = income;
                         incomeComponent.type = GraphObject.point;
-                 
+
                         incomeComponent.tooltip = tooltip.GetComponent<TooltipBehaviour>();
                         incomeComponent.graphType = graphType;
                         return incomeGO;
@@ -252,7 +250,7 @@ namespace BS.CashFlow
                         incomeComponent.graphType = graphType;
                         incomeComponent.type = GraphObject.connection;
                         incomeComponent.tooltip = tooltip.GetComponent<TooltipBehaviour>();
-                       
+
 
                     }
                     void CreateLabel(RectTransform graphRect, Vector2 position, int i)
@@ -287,7 +285,7 @@ namespace BS.CashFlow
             void DestroyGraphs()
             {
                 foreach(Transform t in graphsParent)
-                {            
+                {
                     Destroy(t.gameObject);
                 }
 
@@ -324,6 +322,27 @@ namespace BS.CashFlow
             }
         }
 
-    
+        void AddListeners()
+        {
+            List<GraphValue> incomeList = Values.incomeList;
+            buttons.all.onClick.AddListener(delegate
+            {
+                DisplayExistingValues(0);
+            });
+            buttons.threeMonths.onClick.AddListener(delegate
+            {
+                if(incomeList.Count - 3! >= 0)
+                {
+                    DisplayExistingValues(incomeList.Count - 3);
+                }
+            });
+            buttons.sixMonths.onClick.AddListener(delegate
+            {
+                if(incomeList.Count - 6! >= 0)
+                {
+                    DisplayExistingValues(incomeList.Count - 6);
+                }
+            });
+        }
     }
 }
