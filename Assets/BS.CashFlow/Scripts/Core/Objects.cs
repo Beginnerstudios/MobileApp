@@ -6,10 +6,6 @@ using UnityEngine;
 namespace BS.CashFlow
 {
     public enum GraphObject { point, connection }
-    public interface IGraphValueDisplay
-    {
-        public void DisplayExistingValues(int displayedValuesCount);
-    }
     public class Objects : ExtendedMonoBehaviour
     {
     
@@ -153,8 +149,6 @@ namespace BS.CashFlow
             this.valuesList = valuesList;
             CreateDictionaries();
         }
-     
-
         void CreateDictionaries()
         {
             totalItemsCountDict = new Dictionary<string, int>();

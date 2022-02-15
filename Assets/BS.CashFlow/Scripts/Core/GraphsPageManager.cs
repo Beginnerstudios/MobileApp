@@ -1,4 +1,5 @@
 using BS.Systems;
+using BS.Systems.UI;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -6,12 +7,12 @@ using UnityEngine.UI;
 
 namespace BS.CashFlow
 {
-    public class GraphsPageManager : ExtendedMonoBehaviour, IGraphValueDisplay
+    public class GraphsPageManager : ExtendedMonoBehaviour, IUIPageDisplay, ILayoutComponent
     {
         #region Variables
-        public RectTransform graphsParent;
-        public Prefabs prefabs = new Prefabs();
-        public Buttons buttons = new Buttons();
+        public Assets assets = new Assets();
+        public Buttons buttons = new Buttons();    
+  
         [System.Serializable]
         public struct Buttons
         {
@@ -20,25 +21,60 @@ namespace BS.CashFlow
             public Button all;
         }
         [System.Serializable]
-        public struct Prefabs
+        public struct Assets
         {
             public GameObject graph;
+            public TextMeshProUGUI titleText;
+            public RectTransform widgetsHolder;
         }
 
-    
+        //LayoutComponent
+        [field: SerializeField]
+        public LayoutComponentProperties Properties { get; set; }
+      
+       
 
         #endregion
 
-
-        void Start()
+        public void InitLayoutComponent(LayoutComponentType type, bool isActive, RectTransform contentParent, string text,UI sender)
         {
+            gameObject.SetActive(isActive);
+            Properties = new LayoutComponentProperties(type, gameObject.transform.parent.GetComponent<RectTransform>(), isActive, contentParent, text);
+            assets.titleText.text = Properties.text;         
+
+        }   
+        void OnEnable()
+        {
+            DisplayPage(0);
             AddListeners();
+            void AddListeners()
+            {
+                List<GraphValue> incomeList = Values.incomeList;
+                buttons.all.onClick.AddListener(delegate
+                {
+                    DisplayPage(0);
+                });
+                buttons.threeMonths.onClick.AddListener(delegate
+                {
+                    if(incomeList.Count - 3! >= 0)
+                    {
+                        DisplayPage(incomeList.Count - 3);
+                    }
+                });
+                buttons.sixMonths.onClick.AddListener(delegate
+                {
+                    if(incomeList.Count - 6! >= 0)
+                    {
+                        DisplayPage(incomeList.Count - 6);
+                    }
+                });
+            }
         }
-        public void DisplayExistingValues(int displayedValuesCount)
+        public void DisplayPage(int displayedValuesCount)
         {
             List<GraphValue> incomeList = Values.incomeList;
             UpdateButtons();
-            DestroyGraphs();
+            DestroyWidgets();
             CreateGraph(displayedValuesCount);
             void CreateGraph(int startIndex)
             {
@@ -58,15 +94,15 @@ namespace BS.CashFlow
                     {
                         if(i == 0 || i == 1)
                         {
-                            var newGraph = Instantiate(prefabs.graph);
-                            newGraph.transform.SetParent(graphsParent);
+                            var newGraph = Instantiate(assets.graph);
+                            newGraph.transform.SetParent(assets.widgetsHolder);
                             newGraph.GetComponent<GraphBehaviour>().graphType = (GraphType)i;
                             graphsRectList.Add(newGraph.GetComponent<RectTransform>());
                         }
                         if(i.Equals(2))
                         {
                             tooltip = Instantiate(graphsRectList[0].gameObject.GetComponent<GraphBehaviour>().prefabs.tooltip);
-                            tooltip.transform.SetParent(graphsParent);
+                            tooltip.transform.SetParent(assets.widgetsHolder);
                             graphsRectList.Add(tooltip.GetComponent<RectTransform>());
                         }
 
@@ -282,14 +318,7 @@ namespace BS.CashFlow
 
                 }
             }
-            void DestroyGraphs()
-            {
-                foreach(Transform t in graphsParent)
-                {
-                    Destroy(t.gameObject);
-                }
-
-            }
+      
             void UpdateButtons()
             {
                 if(incomeList.Count >= 3)
@@ -321,28 +350,13 @@ namespace BS.CashFlow
 
             }
         }
-
-        void AddListeners()
+        public void DestroyWidgets()
         {
-            List<GraphValue> incomeList = Values.incomeList;
-            buttons.all.onClick.AddListener(delegate
+            foreach(Transform t in assets.widgetsHolder)
             {
-                DisplayExistingValues(0);
-            });
-            buttons.threeMonths.onClick.AddListener(delegate
-            {
-                if(incomeList.Count - 3! >= 0)
-                {
-                    DisplayExistingValues(incomeList.Count - 3);
-                }
-            });
-            buttons.sixMonths.onClick.AddListener(delegate
-            {
-                if(incomeList.Count - 6! >= 0)
-                {
-                    DisplayExistingValues(incomeList.Count - 6);
-                }
-            });
+                Destroy(t.gameObject);
+            }
+
         }
     }
 }

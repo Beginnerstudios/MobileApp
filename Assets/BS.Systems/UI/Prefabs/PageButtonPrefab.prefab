@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8274709591116772879}
   - component: {fileID: 7881604886811102737}
   m_Layer: 0
-  m_Name: LayoutComponentPrefab
+  m_Name: PageButtonPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -139,7 +139,7 @@ MonoBehaviour:
     parent: {fileID: 0}
     isActive: 0
     text: 
-  textField: {fileID: 5512901149394368657}
+  <titleText>k__BackingField: {fileID: 5512901149394368657}
 --- !u!1 &6819883163823176681
 GameObject:
   m_ObjectHideFlags: 0

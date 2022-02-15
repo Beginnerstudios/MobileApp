@@ -1,7 +1,8 @@
 using System;
-using UnityEngine;
 using System.Collections.Generic;
 using TMPro;
+using UnityEngine;
+using BS.CashFlow;
 
 
 namespace BS.Systems.UI
@@ -10,6 +11,7 @@ namespace BS.Systems.UI
     {
         public Layout layout = new Layout();
         public Pages pages = new Pages();
+        public Prefabs prefabs = new Prefabs();
         [System.Serializable]
         public struct Layout
         {
@@ -24,7 +26,12 @@ namespace BS.Systems.UI
         {
             public List<GameObject> list;
         }
- 
+        [System.Serializable]
+        public struct Prefabs
+        {
+            public List<GameObject> listPages;
+        }
+
         public void Awake()
         {
             AddISystemComponent(this);
@@ -36,8 +43,12 @@ namespace BS.Systems.UI
 
         private void Start()
         {
-            Init();      
+            Init();
             AddLayoutComponents();
+        }
+        public void DisplayPageContent(int pageIndex)
+        {
+          pages.list[pageIndex].GetComponent<IUIPageDisplay>().DisplayPage(pageIndex);
         }
         void Init()
         {
@@ -61,14 +72,15 @@ namespace BS.Systems.UI
                 layouts[i].sizeDelta = new Vector2(width, height * validatedSizes[i]);
             }
         }
-    
+
         void AddLayoutComponents()
-        {            
-            List<GameObject> pageList = pages.list;
+        {
+            List<GameObject> pagePrefabList = prefabs.listPages;
+            pages.list = new List<GameObject>();
             int i = 0;
-            if(pageList.Count > 0)
+            if(pagePrefabList.Count > 0)
             {
-                foreach(GameObject pagePrefab in pageList)
+                foreach(GameObject pagePrefab in pagePrefabList)
                 {
                     if(pagePrefab != null)
                     {
@@ -78,13 +90,13 @@ namespace BS.Systems.UI
                             isActive = true;
                         }
                         var page = Instantiate(pagePrefab, layout.content.transform);
-                        page.GetComponent<LayoutComponentBehaviour>().Init(LayoutComponentType.page, isActive, layout.content,"");
+                        page.GetComponent<ILayoutComponent>().InitLayoutComponent(LayoutComponentType.page, isActive, layout.content, "",this);
                         page.transform.name = pagePrefab.name;
-
+                        pages.list.Add(page);
 
                         var button = Instantiate(layout.LayoutComponentPrefab, layout.topMenu);
                         button.transform.name = pagePrefab.name;
-                        button.GetComponent<LayoutComponentBehaviour>().Init(LayoutComponentType.button, true, layout.content,button.transform.name);
+                        button.GetComponent<ILayoutComponent>().InitLayoutComponent(LayoutComponentType.button, true, layout.content, button.transform.name,this);
 
                         i += 1;
 
@@ -96,7 +108,7 @@ namespace BS.Systems.UI
             {
                 Debug.Log("No pages ale selected.");
             }
-        }    
+        }
     }
     [Serializable]
     public enum LayoutComponentType
@@ -110,19 +122,20 @@ namespace BS.Systems.UI
         public RectTransform parent;
         public bool isActive;
         public string text;
-     
-        public LayoutComponentProperties(LayoutComponentType type, RectTransform parent, bool isActive,RectTransform contentParent,string text)
+
+        public LayoutComponentProperties(LayoutComponentType type, RectTransform parent, bool isActive, RectTransform contentParent, string text)
         {
             this.type = type;
             this.parent = parent;
             this.isActive = isActive;
             this.text = text;
-           
+
         }
     }
     public interface ILayoutComponent
     {
-        public LayoutComponentProperties properties { get; set; }
+        public LayoutComponentProperties Properties { get; set; }       
+        public void InitLayoutComponent(LayoutComponentType type, bool isActive, RectTransform contentParent, string text,UI sender);
     }
 
 }

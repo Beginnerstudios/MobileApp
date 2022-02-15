@@ -244,12 +244,12 @@ PrefabInstance:
       objectReference: {fileID: 3651557658508230529, guid: 91fb829f59ad8d249b8f52cf3927ff4f, type: 3}
     - target: {fileID: 195456410928667587, guid: 1b3dbc0c617c35243816bf5a10b968e0, type: 3}
       propertyPath: pages.list.Array.size
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 195456410928667587, guid: 1b3dbc0c617c35243816bf5a10b968e0, type: 3}
       propertyPath: pages.list.Array.data[0]
       value: 
-      objectReference: {fileID: 9112936434048553088, guid: cb9f5192e77240944b24c6a3b8b51dde, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 195456410928667587, guid: 1b3dbc0c617c35243816bf5a10b968e0, type: 3}
       propertyPath: pages.list.Array.data[1]
       value: 
@@ -260,6 +260,22 @@ PrefabInstance:
       objectReference: {fileID: 3651557658508230529, guid: 91fb829f59ad8d249b8f52cf3927ff4f, type: 3}
     - target: {fileID: 195456410928667587, guid: 1b3dbc0c617c35243816bf5a10b968e0, type: 3}
       propertyPath: pages.list.Array.data[3]
+      value: 
+      objectReference: {fileID: 3651557658508230529, guid: 91fb829f59ad8d249b8f52cf3927ff4f, type: 3}
+    - target: {fileID: 195456410928667587, guid: 1b3dbc0c617c35243816bf5a10b968e0, type: 3}
+      propertyPath: prefabs.listPages.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 195456410928667587, guid: 1b3dbc0c617c35243816bf5a10b968e0, type: 3}
+      propertyPath: prefabs.listPages.Array.data[0]
+      value: 
+      objectReference: {fileID: 9112936434048553088, guid: cb9f5192e77240944b24c6a3b8b51dde, type: 3}
+    - target: {fileID: 195456410928667587, guid: 1b3dbc0c617c35243816bf5a10b968e0, type: 3}
+      propertyPath: prefabs.listPages.Array.data[1]
+      value: 
+      objectReference: {fileID: 3651557658508230529, guid: 91fb829f59ad8d249b8f52cf3927ff4f, type: 3}
+    - target: {fileID: 195456410928667587, guid: 1b3dbc0c617c35243816bf5a10b968e0, type: 3}
+      propertyPath: prefabs.listPages.Array.data[2]
       value: 
       objectReference: {fileID: 3651557658508230529, guid: 91fb829f59ad8d249b8f52cf3927ff4f, type: 3}
     - target: {fileID: 4600631501926957327, guid: 1b3dbc0c617c35243816bf5a10b968e0, type: 3}

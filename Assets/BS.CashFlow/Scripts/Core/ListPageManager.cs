@@ -1,4 +1,5 @@
 using BS.Systems;
+using BS.Systems.UI;
 using CodeMonkey.Utils;
 using System.Collections.Generic;
 using TMPro;
@@ -7,12 +8,17 @@ using UnityEngine.UI;
 
 namespace BS.CashFlow
 {
-    public class ListPageManager : ExtendedMonoBehaviour,IGraphValueDisplay
+    public class ListPageManager : ExtendedMonoBehaviour, IUIPageDisplay, ILayoutComponent
     {
-        #region Variables
-        public RectTransform graphsParent;
-        public Prefabs prefabs = new Prefabs();
+        #region Variables     
+        public Assets assets = new Assets();
         public Buttons buttons = new Buttons();
+        public Rects rects = new Rects();
+        [System.Serializable]
+        public struct Rects
+        {
+            public RectTransform widgetsHolder;
+        }
         [System.Serializable]
         public struct Buttons
         {
@@ -21,21 +27,39 @@ namespace BS.CashFlow
             public Button all;        
         }
         [System.Serializable]
-        public struct Prefabs
+        public struct Assets
         {
             public GameObject graph;
+            public TextMeshProUGUI titleText;
         }
         #endregion
+        //LayoutComponent
+        [field: SerializeField]
+        public LayoutComponentProperties Properties { get; set; }
+  
+        
+
+
+        public void InitLayoutComponent(LayoutComponentType type, bool isActive, RectTransform contentParent, string text,UI sender)
+        {
+            gameObject.SetActive(isActive);
+            Properties = new LayoutComponentProperties(type, gameObject.transform.parent.GetComponent<RectTransform>(), isActive, contentParent, text);
+            assets.titleText.text = Properties.text;
+        }
 
         void Start()
         {
             AddListeners();
         }
-        public void DisplayExistingValues(int displayedValuesCount)
+        void OnEnable()
+        {
+            DisplayPage(0);
+        }
+        public void DisplayPage(int displayedValuesCount)
         {
             List<GraphValue> incomeList = Values.incomeList;
             UpdateButtons();
-            DestroyGraphs();
+            DestroyWidgets();
             CreateGraph(displayedValuesCount);
             void CreateGraph(int startIndex)
             {           
@@ -49,15 +73,15 @@ namespace BS.CashFlow
 
                     for(int i = 0; i < graphsCount; i++)
                     {
-                        var newGraph = Instantiate(prefabs.graph, graphsParent);
+                        var newGraph = Instantiate(assets.graph, rects.widgetsHolder);
                         newGraph.SetActive(true);
                         newGraph.GetComponent<GraphBehaviour>().graphType = (GraphType)i;
                         var newRect = newGraph.GetComponent<RectTransform>();
-                        newRect.sizeDelta = new Vector2(graphsParent.sizeDelta.x, graphsParent.sizeDelta.y / widgetCount);
+                        newRect.sizeDelta = new Vector2(rects.widgetsHolder.sizeDelta.x, rects.widgetsHolder.sizeDelta.y / widgetCount);
                         graphsRectList.Add(newRect);
                     }
                     tooltip = Instantiate(graphsRectList[0].gameObject.GetComponent<GraphBehaviour>().prefabs.tooltip);
-                    tooltip.transform.SetParent(graphsParent);
+                    tooltip.transform.SetParent(rects.widgetsHolder);
                     tooltip.SetActive(true);
                 }
 
@@ -258,14 +282,7 @@ namespace BS.CashFlow
 
                 }
             }
-            void DestroyGraphs()
-            {
-                foreach(Transform t in graphsParent)
-                {
-                    Destroy(t.gameObject);
-                }
-
-            }
+           
             void UpdateButtons()
             {
                 if(incomeList.Count >= 3)
@@ -297,24 +314,31 @@ namespace BS.CashFlow
 
             }
         }
+        public void DestroyWidgets()
+        {
+            foreach(Transform t in rects.widgetsHolder)
+            {
+                Destroy(t.gameObject);
+            }
 
+        }
         void AddListeners()
         {
           
             buttons.all.onClick.AddListener(delegate
             {
-                    DisplayExistingValues(0);
+                DisplayPage(0);
             });
             buttons.threeMonths.onClick.AddListener(delegate
             {
-              
-                    DisplayExistingValues(Values.incomeList.Count - 3);
+
+                DisplayPage(Values.incomeList.Count - 3);
                 
             });
             buttons.sixMonths.onClick.AddListener(delegate
             {
-                
-                    DisplayExistingValues(Values.incomeList.Count - 6);
+
+                DisplayPage(Values.incomeList.Count - 6);
                 
             });
         }
