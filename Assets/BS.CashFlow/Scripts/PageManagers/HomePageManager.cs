@@ -1,9 +1,9 @@
 using BS.Systems;
-using BS.Systems.UI;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+
 
 namespace BS.CashFlow
 {
@@ -30,7 +30,7 @@ namespace BS.CashFlow
             return valueList;
         }
     }
-    public class HomePageManager : MonoBehaviour, ILayoutComponent, IUIPageDisplay
+    public class HomePageManager : ExtendedMonoBehaviour, ILayoutComponent, IUIPageDisplay
     {
 
         public Assets assets = new Assets();
@@ -52,11 +52,11 @@ namespace BS.CashFlow
 
 
 
-        public void InitLayoutComponent(LayoutComponentType type, bool isActive, RectTransform contentParent, string text, UI sender)
+        public void InitLayoutComponent(LayoutComponentType type, bool isActive, RectTransform contentParent, string text)
         {
             gameObject.SetActive(isActive);
             Properties = new LayoutComponentProperties(type, gameObject.transform.parent.GetComponent<RectTransform>(), isActive, contentParent, text);
-            assets.textTitle.text = Properties.text;
+          //  assets.textTitle.text = Properties.text;
         }
         public void DisplayPage(int displayedValuesCount)
         {
@@ -105,7 +105,7 @@ namespace BS.CashFlow
 
             }
         }
-        void OnEnable()
+        void Start()
         {
             DisplayPage(0);
         } 

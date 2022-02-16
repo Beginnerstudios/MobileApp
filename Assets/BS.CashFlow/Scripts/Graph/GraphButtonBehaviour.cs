@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 
 
+
 namespace BS.CashFlow
 {
     public class GraphButtonBehaviour : ExtendedMonoBehaviour

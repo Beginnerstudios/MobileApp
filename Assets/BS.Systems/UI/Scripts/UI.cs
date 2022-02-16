@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
-using BS.CashFlow;
 
 
-namespace BS.Systems.UI
+namespace BS.Systems
 {
     public class UI : ExtendedMonoBehaviour, ISystemComponent
     {
@@ -48,7 +46,14 @@ namespace BS.Systems.UI
         }
         public void DisplayPageContent(int pageIndex)
         {
-          pages.list[pageIndex].GetComponent<IUIPageDisplay>().DisplayPage(pageIndex);
+            if(pages.list[pageIndex].GetComponent<IUIPageDisplay>() != null)
+            {
+            pages.list[pageIndex].GetComponent<IUIPageDisplay>().DisplayPage(pageIndex);
+            }
+            else
+            {
+                Debug.Log("Your page GameObject not Implement IUIPageDisplay interface !!");
+            }
         }
         void Init()
         {
@@ -90,13 +95,17 @@ namespace BS.Systems.UI
                             isActive = true;
                         }
                         var page = Instantiate(pagePrefab, layout.content.transform);
-                        page.GetComponent<ILayoutComponent>().InitLayoutComponent(LayoutComponentType.page, isActive, layout.content, "",this);
+                        LayoutComponentType type = LayoutComponentType.page;
+                        string name = page.transform.name;
+                        page.GetComponent<ILayoutComponent>().InitLayoutComponent(type, isActive, layout.content, name);
                         page.transform.name = pagePrefab.name;
                         pages.list.Add(page);
 
                         var button = Instantiate(layout.LayoutComponentPrefab, layout.topMenu);
+                        type = LayoutComponentType.button;
+                        name = page.transform.name;
                         button.transform.name = pagePrefab.name;
-                        button.GetComponent<ILayoutComponent>().InitLayoutComponent(LayoutComponentType.button, true, layout.content, button.transform.name,this);
+                        button.GetComponent<ILayoutComponent>().InitLayoutComponent(type, true, layout.content, name);
 
                         i += 1;
 
@@ -118,10 +127,10 @@ namespace BS.Systems.UI
     [Serializable]
     public class LayoutComponentProperties
     {
+        public string text;
         public LayoutComponentType type;
         public RectTransform parent;
         public bool isActive;
-        public string text;
 
         public LayoutComponentProperties(LayoutComponentType type, RectTransform parent, bool isActive, RectTransform contentParent, string text)
         {
@@ -134,8 +143,13 @@ namespace BS.Systems.UI
     }
     public interface ILayoutComponent
     {
-        public LayoutComponentProperties Properties { get; set; }       
-        public void InitLayoutComponent(LayoutComponentType type, bool isActive, RectTransform contentParent, string text,UI sender);
+        public LayoutComponentProperties Properties { get; set; }
+        public void InitLayoutComponent(LayoutComponentType type, bool isActive, RectTransform contentParent, string text);
+    }
+    public interface IUIPageDisplay
+    {
+        public void DisplayPage(int displayedValuesCount);
+        public void DestroyWidgets();
     }
 
 }

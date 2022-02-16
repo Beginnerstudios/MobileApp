@@ -6,7 +6,7 @@ using UnityEngine;
 namespace BS.CashFlow
 {
     public enum GraphObject { point, connection }
-    public class Objects : ExtendedMonoBehaviour
+    public class CashFlow : ExtendedMonoBehaviour
     {
     
     }

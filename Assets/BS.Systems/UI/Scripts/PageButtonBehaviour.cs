@@ -2,9 +2,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace BS.Systems.UI
+namespace BS.Systems
 {
-
     public class PageButtonBehaviour : ExtendedMonoBehaviour, ILayoutComponent
     {
         [field: SerializeField]
@@ -12,13 +11,12 @@ namespace BS.Systems.UI
         [field: SerializeField]
         public TextMeshProUGUI titleText { get; set; }
 
-
         void Awake()
         {
 
         }
 
-        public void InitLayoutComponent(LayoutComponentType type, bool isActive, RectTransform contentParent, string text, UI sender)
+        public void InitLayoutComponent(LayoutComponentType type, bool isActive, RectTransform contentParent, string text)
         {
             gameObject.SetActive(isActive);
             Properties = new LayoutComponentProperties(type, gameObject.transform.parent.GetComponent<RectTransform>(), isActive, contentParent, text);

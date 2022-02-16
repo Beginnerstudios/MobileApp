@@ -1,5 +1,4 @@
 using BS.Systems;
-using BS.Systems.UI;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -36,12 +35,11 @@ namespace BS.CashFlow
 
         #endregion
 
-        public void InitLayoutComponent(LayoutComponentType type, bool isActive, RectTransform contentParent, string text,UI sender)
+        public void InitLayoutComponent(LayoutComponentType type, bool isActive, RectTransform contentParent, string text)
         {
             gameObject.SetActive(isActive);
             Properties = new LayoutComponentProperties(type, gameObject.transform.parent.GetComponent<RectTransform>(), isActive, contentParent, text);
-            assets.titleText.text = Properties.text;         
-
+            //assets.titleText.text = Properties.text;         
         }   
         void OnEnable()
         {
@@ -72,6 +70,7 @@ namespace BS.CashFlow
         }
         public void DisplayPage(int displayedValuesCount)
         {
+           
             List<GraphValue> incomeList = Values.incomeList;
             UpdateButtons();
             DestroyWidgets();

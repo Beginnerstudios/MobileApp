@@ -2,9 +2,8 @@ using System;
 using UnityEngine;
 
 
-namespace BS.Systems
+namespace BS.Systems.Events
 {
-
     public class Events : ExtendedMonoBehaviour, ISystemComponent
     {
         public event EventHandler OnReferencesLoaded;
